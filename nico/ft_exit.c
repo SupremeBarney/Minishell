@@ -1,25 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/04/01 11:37:46 by nipichon         ###   ########.fr       */
+/*   Created: 2026/04/13 12:26:13 by nipichon          #+#    #+#             */
+/*   Updated: 2026/04/13 12:27:45 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "minishell.h"
 
-
-
-typedef struct	s_environment_variable{
-	void	*variable;
-	int		index;
-}	t_environment_variable;
-
-
-
-#endif
+void	ft_exit(void)
+{
+	exit(1);
+}
