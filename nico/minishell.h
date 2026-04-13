@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/04/13 13:55:44 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/04/13 14:48:55 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 
 typedef struct s_environment_variables{
-	char					*variable;
+	char					*variable_name;
+	char					*variable_value;
 	t_environment_variable	*next;
 }	t_environment_variable;
 

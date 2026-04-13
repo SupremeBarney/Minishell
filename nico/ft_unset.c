@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 13:30:31 by nipichon          #+#    #+#             */
-/*   Updated: 2026/04/13 13:50:45 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/04/13 14:56:32 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_unset(char var_to_unset, t_all_env_var *dir_of_vars)
 	{
 		tmp_2 = tmp;
 		tmp = tmp->next;
-		if (tmp->variable == var_to_unset)
+		if (tmp->variable_name == var_to_unset)
 		{
 			tmp_2->next = tmp->next;
 			free (tmp);
