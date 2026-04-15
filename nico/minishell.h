@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/04/15 15:05:59 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/04/15 15:52:34 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <limits.h>
 
 
 typedef struct s_environment_variables{
@@ -51,6 +52,12 @@ typedef struct s_current_command{
 	char	*option;
 	int		num_of_args;
 }	t_current_command;
+
+typedef struct s_history{
+	char		*command;
+	int			index;
+	t_history	*next;
+}	t_history;
 
 void	ft_exit(void);
 void	ft_echo(char *str);

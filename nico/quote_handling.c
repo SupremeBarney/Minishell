@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 14:14:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/04/15 15:04:51 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/04/15 15:14:51 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	single_quotes(t_current_command *command)
 				while (command->args->val[cur_arg][i]
 					&& command->args->val[cur_arg][i] != 39)
 				{
-					if (is_spec_char(command->args->val[cur_arg][i]) == 1)
+					if (command->args->is_special == 1)
 						special_into_normal(command->args, cur_arg, i);
 				}
 			}
@@ -56,8 +56,8 @@ void	double_quotes(t_current_command *command)
 				while (command->args->val[cur_arg][i]
 					&& command->args->val[cur_arg][i] != 34)
 				{
-					if (is_spec_char(command->args->val[cur_arg][i]) == 1
-				&& command->args->val[cur_arg][i] != '$')
+					if (command->args->is_special == 1
+						&& command->args->val[cur_arg][i] != '$')
 						special_into_normal(command->args, cur_arg, i);
 				}
 			}
