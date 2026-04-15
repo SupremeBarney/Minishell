@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/04/13 15:39:07 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/04/13 15:42:57 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	command_control(t_current_command *com_to_exec, t_all_files *files_dir,
 	if (com_to_exec->command == "exit")
 		return (ft_exit());
 	if (com_to_exec->command == "export")
-		return (ft_export()); ///a faire la fonction et mettre les arg ici
+		return (ft_export()); ///a faire la fonction export et mettre les arg ici
 	if (com_to_exec->command == "pwd")
 		return (ft_pwd(files_dir->current_file));
 	if (com_to_exec->command == "unset")
