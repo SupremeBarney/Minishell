@@ -1,30 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/05 14:42:37 by alexfran         ###   ########.fr       */
+/*   Created: 2025/11/13 11:09:21 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/27 17:14:11 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include <stdlib.h>
-# include "libftprintf/ft_printf.h"
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t	i;
 
-typedef struct	s_environment_variable {
-	void	*variable;
-	int		index;
-}	t_environment_variable;
-
-typedef struct s_token {
-	char			*token;
-	struct s_token	*next;
-}	t_token;
-
-
-#endif
+	i = 0;
+	if (size > 0)
+	{
+		while (src[i] && i < size - 1)
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+	while (src[i])
+			i++;
+	return (i);
+}

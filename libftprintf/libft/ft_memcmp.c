@@ -1,30 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/05 14:42:37 by alexfran         ###   ########.fr       */
+/*   Created: 2025/11/13 13:52:22 by alexfran          #+#    #+#             */
+/*   Updated: 2025/12/01 16:07:55 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <stdio.h>
+#include <string.h>
 
-# include <stdlib.h>
-# include "libftprintf/ft_printf.h"
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	size_t	i;
 
-typedef struct	s_environment_variable {
-	void	*variable;
-	int		index;
-}	t_environment_variable;
-
-typedef struct s_token {
-	char			*token;
-	struct s_token	*next;
-}	t_token;
-
-
-#endif
+	i = 0;
+	if (n == 0)
+		return (0);
+	while (i < n - 1 && ((char *)s1)[i] == ((char *)s2)[i])
+	{
+		i++;
+	}
+	return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
+}

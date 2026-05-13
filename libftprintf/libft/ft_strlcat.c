@@ -1,30 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/05 14:42:37 by alexfran         ###   ########.fr       */
+/*   Created: 2025/11/13 11:11:11 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/28 16:16:19 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <stdio.h>
+#include <unistd.h>
 
-# include <stdlib.h>
-# include "libftprintf/ft_printf.h"
+size_t	ft_strlcat(char *dst, const char *src, size_t size)
+{
+	size_t	i;
+	size_t	j;
 
-typedef struct	s_environment_variable {
-	void	*variable;
-	int		index;
-}	t_environment_variable;
-
-typedef struct s_token {
-	char			*token;
-	struct s_token	*next;
-}	t_token;
-
-
-#endif
+	i = 0;
+	j = 0;
+	while (dst[i])
+		i++;
+	while (src[j])
+		j++;
+	if (size <= i)
+		return (j + size);
+	j = 0;
+	while (src[j] && (i + j < size - 1))
+	{
+		dst[i + j] = src[j];
+		j++;
+	}
+	dst[i + j] = '\0';
+	while (src[j])
+			j++;
+	return (i + j);
+}

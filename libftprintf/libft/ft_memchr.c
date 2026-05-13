@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/05 14:42:37 by alexfran         ###   ########.fr       */
+/*   Created: 2025/11/13 13:26:20 by alexfran          #+#    #+#             */
+/*   Updated: 2025/12/02 10:14:17 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <stdio.h>
 
-# include <stdlib.h>
-# include "libftprintf/ft_printf.h"
+void	*ft_memchr(const void *s, int c, size_t n)
+{
+	size_t			i;
+	unsigned char	*str;
 
-typedef struct	s_environment_variable {
-	void	*variable;
-	int		index;
-}	t_environment_variable;
-
-typedef struct s_token {
-	char			*token;
-	struct s_token	*next;
-}	t_token;
-
-
-#endif
+	i = 0;
+	str = (unsigned char *)s;
+	while (i < n)
+	{
+		if (str[i] == (unsigned char)c)
+			return ((void *)&str[i]);
+		i++;
+	}
+	return (NULL);
+}
