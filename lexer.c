@@ -61,6 +61,29 @@ char	*no_quotes(char *token)
 	return (res);
 }
 
+t_token_type	which_type(char *token)
+{
+	int				i;
+	
+	i = 0;
+	if (token[i] == '|')
+		return (PIPE);
+	else if (token[i] == '<')
+	{
+		if (token[i + 1] == '<')
+			return (HEREDOC);
+		return (REDIR_IN);
+	}
+	else if (token[i] == '>')
+	{
+		if (token[i + 1] == '>')
+			return (REDIR_OUT_APPEND);
+		return (REDIR_OUT);
+	}
+	else
+		return (WORD);
+}
+
 void	add_node(t_token **tokens, char *token)
 {
 	t_token	*cur;
@@ -70,6 +93,7 @@ void	add_node(t_token **tokens, char *token)
 	if (!new_token)
 		return ;
 	new_token->token = no_quotes(token);
+	new_token->token_type = which_type(token);
 	free(token);
 	new_token->next = NULL;
 	if (!*tokens)
@@ -171,6 +195,7 @@ void	display_node(t_token *list)
 	while (node)
 	{
 		ft_printf("value : %s\n", node->token);
+		ft_printf("type : %d\n", node->token_type);
 		node = node->next;
 	}
 }
@@ -202,5 +227,5 @@ int	main(void)
 	tokens = NULL;
 	if (valid_nb_quote("ls|grep foo"))
 		exit(EXIT_FAILURE);
-	tokenisation("ls|grep foo", &tokens); display_node(tokens);
+	tokenisation("ls|grep foo < << > >>", &tokens); display_node(tokens);
 }
