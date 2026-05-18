@@ -83,6 +83,47 @@ void	add_node(t_token **tokens, char *token)
 	}
 }
 
+void	handle_operator(char *str, t_token **tokens, int *i, int *start_token)
+{
+	if (*i != *start_token)
+		add_node(tokens, ft_substr(str, *start_token, *i - *start_token));
+	if (str[*i] == '|')
+	{
+		add_node(tokens, ft_strdup("|"));
+		(*i)++;
+		*start_token = *i;
+	}
+	else if (str[*i] == '<')
+	{
+		if (str[*i + 1] == '<')
+		{
+			add_node(tokens, ft_strdup("<<"));
+			*i += 2;
+			*start_token = *i;
+		}
+		else
+		{
+			add_node(tokens, ft_strdup("<"));
+			(*i)++;
+			*start_token = *i;
+		}
+	}
+	else if (str[*i] == '>')
+	{
+		if (str[*i + 1] == '>')
+		{
+			add_node(tokens, ft_strdup(">>"));
+			*i += 2;
+			*start_token = *i;
+		}
+		else
+		{
+			add_node(tokens, ft_strdup(">"));
+			(*i)++;
+			*start_token = *i;
+		}
+	}
+}
 
 void	tokenisation(char *str, t_token **tokens)
 {
@@ -108,6 +149,14 @@ void	tokenisation(char *str, t_token **tokens)
 			token_start = i;
 			continue;
 		}
+		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
+		{
+			handle_operator(str, tokens, &i, &token_start);
+			while (str[i] == ' ')
+				i++;
+			token_start = i;
+			continue;
+		}
 		i++;
 	}
 	if (i > token_start)
@@ -126,9 +175,32 @@ void	display_node(t_token *list)
 	}
 }
 
+int	valid_nb_quote(char *str)
+{
+	int	i;
+	int	quote_flag;
+
+	i = ((quote_flag = 0));
+	while (str[i])
+	{
+		if (str[i] == '\'' && quote_flag != 2)
+			quote_flag = 1 - quote_flag;
+		else if (str[i] == '"' && quote_flag != 1)
+			quote_flag = 2 - quote_flag;
+		i++;
+	}
+	if (quote_flag)
+		return (1);
+	return (0);
+}
+
+
 int	main(void)
 {
 	t_token *tokens;
-	tokenisation("ls -l \"blbla'ldkdk\"", &tokens);
-	display_node(tokens);
+
+	tokens = NULL;
+	if (valid_nb_quote("ls|grep foo"))
+		exit(EXIT_FAILURE);
+	tokenisation("ls|grep foo", &tokens); display_node(tokens);
 }
