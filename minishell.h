@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/05 14:42:37 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/05/22 13:03:53 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,18 @@
 # include <stdlib.h>
 # include "libftprintf/ft_printf.h"
 
-typedef struct s_cmd {
-	char	*cmd;
-	char	*argument;
-	char	*destination;
+typedef struct s_cmd
+{
+	char			**args;
+	char			*input;
+	char			*output;
+	char			*heredoc;
+	char			*output_append;
+	struct s_cmd	*next;
 }	t_cmd;
 
-
-typedef enum	e_token_type {
+typedef enum e_token_type
+{
 	WORD,
 	PIPE,
 	REDIR_IN,
@@ -32,16 +36,17 @@ typedef enum	e_token_type {
 	REDIR_OUT_APPEND,
 }	t_token_type;
 
-typedef struct	s_environment_variable {
+typedef struct s_environment_variable
+{
 	void	*variable;
 	int		index;
 }	t_environment_variable;
 
-typedef struct s_token {
+typedef struct s_token
+{
 	char			*token;
 	t_token_type	token_type;
 	struct s_token	*next;
 }	t_token;
-
 
 #endif

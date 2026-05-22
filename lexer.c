@@ -1,16 +1,93 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/05/06 16:05:09 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/05/22 13:35:46 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	nb_of_tokens(t_token *token)
+{
+	t_token	*cur;
+	int		i;
+
+	cur = token;
+	i = 0;
+	while (cur && cur->token_type != PIPE)
+	{
+		if (cur->token_type == WORD)
+			i++;
+		cur = cur->next;
+	}
+	return (i);
+}
+
+void	add_cmd_node(t_cmd **cmd, t_token *tokens)
+{
+	int		i;
+	t_token	*cur_token;
+	t_cmd	*cur_cmd;
+
+	i = 0;
+	cur_token = tokens;
+	*cmd = ft_calloc(1, sizeof(t_cmd));
+	if (!(*cmd))
+		return ;
+	cur_cmd = *cmd;
+	cur_cmd->args = malloc(sizeof(char *) * (nb_of_tokens(tokens) + 1));
+	if (!cur_cmd->args)
+		return ;
+	while (cur_token)
+	{
+		if (cur_token->token_type == WORD)
+		{
+			cur_cmd->args[i++] = ft_strdup(cur_token->token);
+			if (!cur_token->next || cur_token->next->token_type != WORD)
+				cur_cmd->args[i] = NULL;
+		}
+		else if (cur_token->token_type == PIPE)
+		{
+			i = 0;
+			cur_token = cur_token->next;
+			cur_cmd->next = ft_calloc(1, sizeof(t_cmd));
+			if (!cur_cmd->next)
+				return ;
+			cur_cmd = cur_cmd->next;
+			cur_cmd->args = malloc(sizeof(char *)
+					* (nb_of_tokens(cur_token) + 1));
+			if (!cur_cmd->args)
+				return ;
+			continue ;
+		}
+		else if (cur_token->token_type == REDIR_IN)
+		{
+			cur_token = cur_token->next;
+			cur_cmd->input = ft_strdup(cur_token->token);
+		}
+		else if (cur_token->token_type == HEREDOC)
+		{
+			cur_token = cur_token->next;
+			cur_cmd->heredoc = ft_strdup(cur_token->token);
+		}
+		else if (cur_token->token_type == REDIR_OUT)
+		{
+			cur_token = cur_token->next;
+			cur_cmd->output = ft_strdup(cur_token->token);
+		}
+		else if (cur_token->token_type == REDIR_OUT_APPEND)
+		{
+			cur_token = cur_token->next;
+			cur_cmd->output_append = ft_strdup(cur_token->token);
+		}
+		cur_token = cur_token->next;
+	}
+}
 
 int	nb_of_quotes(char *token)
 {
@@ -64,7 +141,7 @@ char	*no_quotes(char *token)
 t_token_type	which_type(char *token)
 {
 	int				i;
-	
+
 	i = 0;
 	if (token[i] == '|')
 		return (PIPE);
@@ -94,8 +171,8 @@ void	add_node(t_token **tokens, char *token)
 		return ;
 	new_token->token = no_quotes(token);
 	new_token->token_type = which_type(token);
-	free(token);
 	new_token->next = NULL;
+	free(token);
 	if (!*tokens)
 		*tokens = new_token;
 	else
@@ -200,6 +277,22 @@ void	display_node(t_token *list)
 	}
 }
 
+void	display_cmd(t_cmd *cmd)
+{
+	t_cmd	*node;
+	int		i;
+
+	node = cmd;
+	while (node)
+	{
+		i = 0;
+		while (node->args[i])
+			ft_printf("args : %s\n", node->args[i++]);
+		ft_printf("input : %s\noutput : %s\nheredoc : %s\noutput_append : %s\n\n", node->input, node->output, node->heredoc, node->output_append);
+		node = node->next;
+	}
+}
+
 int	valid_nb_quote(char *str)
 {
 	int	i;
@@ -219,13 +312,16 @@ int	valid_nb_quote(char *str)
 	return (0);
 }
 
-
 int	main(void)
 {
-	t_token *tokens;
+	t_token	*tokens;
+	t_cmd	*cmd;
 
 	tokens = NULL;
 	if (valid_nb_quote("ls|grep foo"))
 		exit(EXIT_FAILURE);
-	tokenisation("ls|grep foo < << > >>", &tokens); display_node(tokens);
+	tokenisation("ls | grep foo < input.txt > output.txt", &tokens);
+	display_node(tokens);
+	add_cmd_node(&cmd, tokens);
+	display_cmd(cmd);
 }
