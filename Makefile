@@ -5,7 +5,8 @@ INC_DIR = .
 
 CFLAGS  = -Wall -Wextra -Werror -I$(INC_DIR) -Ilibftprintf -g3 -O0
 LDFLAGS = -Llibftprintf
-LDLIBS  = -lftprintf
+READLINE = -lreadline -lncurses
+LDLIBS  = -lftprintf $(READLINE)
 
 SRC = $(wildcard *.c)
 

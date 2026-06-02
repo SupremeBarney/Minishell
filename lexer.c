@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/05/22 13:35:46 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/06/02 15:37:39 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ int	nb_of_tokens(t_token *token)
 	return (i);
 }
 
+void	init_cmd(t_cmd *cmd)
+{
+	cmd->args = NULL;
+	cmd->input = NULL;
+	cmd->output = NULL;
+	cmd->heredoc = NULL;
+	cmd->output_append = NULL;
+	cmd->next = NULL;
+}
+
 void	add_cmd_node(t_cmd **cmd, t_token *tokens)
 {
 	int		i;
@@ -39,6 +49,7 @@ void	add_cmd_node(t_cmd **cmd, t_token *tokens)
 	*cmd = ft_calloc(1, sizeof(t_cmd));
 	if (!(*cmd))
 		return ;
+	init_cmd(*cmd);
 	cur_cmd = *cmd;
 	cur_cmd->args = malloc(sizeof(char *) * (nb_of_tokens(tokens) + 1));
 	if (!cur_cmd->args)
@@ -46,13 +57,10 @@ void	add_cmd_node(t_cmd **cmd, t_token *tokens)
 	while (cur_token)
 	{
 		if (cur_token->token_type == WORD)
-		{
 			cur_cmd->args[i++] = ft_strdup(cur_token->token);
-			if (!cur_token->next || cur_token->next->token_type != WORD)
-				cur_cmd->args[i] = NULL;
-		}
 		else if (cur_token->token_type == PIPE)
 		{
+			cur_cmd->args[i] = NULL;
 			i = 0;
 			cur_token = cur_token->next;
 			cur_cmd->next = ft_calloc(1, sizeof(t_cmd));
@@ -87,6 +95,7 @@ void	add_cmd_node(t_cmd **cmd, t_token *tokens)
 		}
 		cur_token = cur_token->next;
 	}
+	cur_cmd->args[i] = NULL;
 }
 
 int	nb_of_quotes(char *token)
@@ -120,6 +129,8 @@ char	*no_quotes(char *token)
 	int		flag;
 	char	*res;
 
+	if (!token)
+		return (NULL);
 	flag = ((i = j = 0));
 	res = malloc(sizeof(char) * (ft_strlen(token) - nb_of_quotes(token) + 1));
 	if (!res)
@@ -140,7 +151,7 @@ char	*no_quotes(char *token)
 
 t_token_type	which_type(char *token)
 {
-	int				i;
+	int	i;
 
 	i = 0;
 	if (token[i] == '|')
@@ -166,6 +177,8 @@ void	add_node(t_token **tokens, char *token)
 	t_token	*cur;
 	t_token	*new_token;
 
+	if (!token)
+		return ;
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
@@ -186,8 +199,14 @@ void	add_node(t_token **tokens, char *token)
 
 void	handle_operator(char *str, t_token **tokens, int *i, int *start_token)
 {
+	char	*tmp;
+
 	if (*i != *start_token)
-		add_node(tokens, ft_substr(str, *start_token, *i - *start_token));
+	{
+		tmp = ft_substr(str, (unsigned int)*start_token, i - start_token);
+		if (tmp)
+			add_node(tokens, tmp);
+	}
 	if (str[*i] == '|')
 	{
 		add_node(tokens, ft_strdup("|"));
@@ -228,9 +247,10 @@ void	handle_operator(char *str, t_token **tokens, int *i, int *start_token)
 
 void	tokenisation(char *str, t_token **tokens)
 {
-	int	i;
-	int	token_start;
-	int	quote_flag;
+	int		i;
+	int		token_start;
+	int		quote_flag;
+	char	*tmp;
 
 	i = ((quote_flag = 0));
 	while (str[i] == ' ')
@@ -244,11 +264,13 @@ void	tokenisation(char *str, t_token **tokens)
 			quote_flag = 2 - quote_flag;
 		else if (str[i] == ' ' && quote_flag == 0)
 		{
-			add_node(tokens, ft_substr(str, token_start, i - token_start));
+			tmp = ft_substr(str, token_start, i - token_start);
+			if (tmp)
+				add_node(tokens, tmp);
 			while (str[i] == ' ')
-					i++;
+				i++;
 			token_start = i;
-			continue;
+			continue ;
 		}
 		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
 		{
@@ -256,12 +278,16 @@ void	tokenisation(char *str, t_token **tokens)
 			while (str[i] == ' ')
 				i++;
 			token_start = i;
-			continue;
+			continue ;
 		}
 		i++;
 	}
 	if (i > token_start)
-		add_node(tokens, ft_substr(str, token_start, i - token_start));
+	{
+		tmp = ft_substr(str, token_start, i - token_start);
+		if (tmp)
+			add_node(tokens, tmp);
+	}
 }
 
 void	display_node(t_token *list)
@@ -312,16 +338,279 @@ int	valid_nb_quote(char *str)
 	return (0);
 }
 
-int	main(void)
+void	free_cmd(t_cmd *cmd)
 {
+	t_cmd	*tmp;
+	int		i;
+
+	i = 0;
+	if (!cmd)
+		return ;
+	while (cmd)
+	{
+		i = 0;
+		tmp = cmd->next;
+		if (cmd->args)
+		{
+			while (cmd->args[i])
+				free(cmd->args[i++]);
+			free(cmd->args);
+		}
+		if (cmd->input)
+			free(cmd->input);
+		if (cmd->heredoc)
+			free(cmd->heredoc);
+		if (cmd->output)
+			free(cmd->output);
+		if (cmd->output_append)
+			free(cmd->output_append);
+		free(cmd);
+		cmd = tmp;
+	}
+}
+
+void	free_tokens(t_token *tokens)
+{
+	t_token	*tmp;
+
+	if (!tokens)
+		return ;
+	while (tokens)
+	{
+		tmp = tokens->next;
+		free(tokens->token);
+		free(tokens);
+		tokens = tmp;
+	}
+}
+
+int	valid_syntax(t_token *tokens)
+{
+	t_token	*tmp;
+
+	tmp = tokens;
+	if (tmp->token_type == PIPE)
+		return (1);
+	while (tmp)
+	{
+		if (((tmp->token_type >= PIPE && tmp->token_type <= REDIR_OUT_APPEND)
+				&& !tmp->next)
+			|| (tmp->token_type == PIPE && tmp->next->token_type == PIPE)
+			|| ((tmp->token_type != WORD && tmp->token_type != PIPE)
+				&& tmp->next->token_type != WORD))
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+
+char	**first_equal(char *str)
+{
+	int		i;
+	int		j;
+	char	**res;
+
+	i = 0;
+	res = malloc(sizeof(char *) * 3);
+	while (str[i] != '=' && str[i])
+		i++;
+	res[0] = ft_substr(str, 0, i);
+	if (str[i] == '=')
+	{
+		j = i + 1;
+		while (str[i])
+			i++;
+		res[1] = ft_substr(str, j, i - j);
+		res[2] = 0;
+	}
+	else
+	{
+		res[1] = NULL;
+		res[2] = 0;
+	}
+	return (res);
+}
+
+void	free_chars(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+		free (tab[i++]);
+	free (tab);
+}
+
+void	set_env(t_env **var, char **envp)
+{
+	int		i;
+	t_env	*cur;
+	t_env	*new_var;
+	char	**tmps;
+
+	cur = *var;
+	i = 0;
+	while (envp[i])
+	{
+		new_var = malloc(sizeof(t_env));
+		if (!new_var)
+			return ;
+		tmps = first_equal(envp[i]);
+		new_var->value = NULL;
+		new_var->name = ft_strdup(tmps[0]);
+		if (tmps[1])
+			new_var->value = ft_strdup(tmps[1]);
+		new_var->next = NULL;
+		if (!*var)
+			*var = new_var;
+		else
+			cur->next = new_var;
+		cur = new_var;
+		i++;
+		free_chars (tmps);
+	}
+}
+
+void	display_env(t_env *var)
+{
+	t_env	*cur;
+
+	cur = var;
+	while (cur)
+	{
+		printf("%s : %s\n", cur->name, cur->value);
+		cur = cur->next;
+	}
+}
+
+char	*get_env_value(t_env *env, char *name)
+{
+	t_env	*cur;
+
+	cur = env;
+	while (cur)
+	{
+		if (ft_strncmp(cur->name, name, ft_strlen(name) + 1) == 0)
+			return (cur->value);
+		cur = cur->next;
+	}
+	return (NULL);
+}
+
+char	*strjoin_free(char *s1, char *s2)
+{
+	char	*res;
+
+	res = ft_strjoin(s1, s2);
+	free (s1);
+	return (res);
+}
+char	*handle_dollar(char *str, int *i, t_shell *shell)
+{
+	int		j;
+	char	*var;
+	char	*value;
+
+	(*i)++;
+	j = *i;
+	while (ft_isalnum(str[*i]) || str[*i] == '_')
+		(*i)++;
+	var = ft_substr(str, j, *i - j);
+	value = get_env_value(shell->env, var);
+	free(var);
+	if (value)
+		return (ft_strdup(value));
+	return (ft_strdup(""));
+}
+
+char    *expansion(char *str, t_shell *shell)
+{
+	int		i;
+	int		flag;
+	char	*res;
+	char	*tmp_dollar;
+	char	tmp[2];
+
+	i = ((flag = 0));
+	res = ft_strdup("");
+	tmp[1] = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && flag != 2)
+		{
+			flag = 1 - flag;
+			i++;
+		}
+		else if (str[i] == '\"' && flag != 1)
+		{
+			flag = 2 - flag;
+			i++;
+		}
+		else if (str[i] == '$' && flag != 1)
+		{
+			tmp_dollar = handle_dollar(str, &i, shell);
+			res = strjoin_free(res, tmp_dollar);
+			free(tmp_dollar);
+		}
+		else
+		{
+			tmp[0] = str[i++];
+			res = strjoin_free(res, tmp);
+		}
+	}
+	return (res);
+}
+
+void	main_loop(char **envp)
+{
+	t_shell	shell;
 	t_token	*tokens;
 	t_cmd	*cmd;
+	char	*read_line;
 
-	tokens = NULL;
-	if (valid_nb_quote("ls|grep foo"))
-		exit(EXIT_FAILURE);
-	tokenisation("ls | grep foo < input.txt > output.txt", &tokens);
-	display_node(tokens);
-	add_cmd_node(&cmd, tokens);
-	display_cmd(cmd);
+	shell.env = NULL;
+	set_env(&shell.env, envp);
+	shell.exit_status = 0;
+	while (1)
+	{
+		tokens = NULL;
+		cmd = NULL;
+		//display_env(var);
+		read_line = readline("Barney$ ");
+		if (!read_line || valid_nb_quote(read_line))
+			exit(EXIT_FAILURE);
+		if (!read_line[0])
+		{
+			free (read_line);
+			continue ;
+		}
+		add_history(read_line);
+		tokenisation(read_line, &tokens);
+		if (!tokens)
+		{
+			free (read_line);
+			continue ;
+		}
+		if (valid_syntax(tokens) == 1)
+		{
+			free (read_line);
+			free_tokens(tokens);
+			ft_putstr_fd("Wrong Syntax\n", 2);
+			continue ;
+		}
+		display_node(tokens);
+		add_cmd_node(&cmd, tokens);
+		display_cmd(cmd);
+		free_tokens(tokens);
+		free_cmd(cmd);
+		free (read_line);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	main_loop(envp);
 }
