@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 13:30:31 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 13:22:05 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/06/03 13:34:11 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ void	ft_unset(t_env *first_env, char *var_to_unset)
 		return ;
 	if (first_env->name == var_to_unset)
 	{
+		finder = first_env;
 		first_env = first_env->next;
+		// function pour free tout (finder);
 		return ;
 	}
 	prev = first_env;
@@ -31,6 +33,7 @@ void	ft_unset(t_env *first_env, char *var_to_unset)
 		if (finder->name == var_to_unset)
 		{
 			prev->next = finder->next;
+			//function pour free tout (finder);
 			return ;
 		}
 		prev = finder;
