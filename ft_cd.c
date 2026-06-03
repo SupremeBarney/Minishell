@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/26 12:07:16 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/06/03 14:52:36 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,44 @@
 
 // pour tout les fonctions il faudra rajouter un moyen d'avoir tout les variable d'environement
 
-void	ft_which_cd(char *str)
+void	ft_cd(char *str, t_env *first_env)
+{
+	t_env	*pwd;
+	t_env	*home;
+	t_env	*parseur;
+
+	if (!first_env)
+		ft_which_cd(str, NULL, NULL);
+	parseur = first_env;
+	pwd = NULL;
+	home = NULL;
+	while (parseur)
+	{
+		if (ft_strncmp("PWD", parseur->name, 4) == 0)
+			pwd = parseur;
+		if (ft_strncmp("HOME", parseur->name, 5) == 0)
+			home = parseur;
+		parseur = parseur->next;
+	}
+	ft_which_cd(str, pwd, home);
+}
+
+void	ft_which_cd(char *str, t_env *pwd, t_env *home)
 {
 	if (!str || str[0] == '\n')
 	{
-		ft_cd_with_nothing();
+		ft_cd_with_nothing(home);
 		return ;
 	}
 	else if (str[0] == '.')
 	{
 		if (str[1] == '.')
 		{
-			ft_cd_backtrack();
+			ft_cd_backtrack(pwd);
 		}
 		if (str[1] == '\0')
 		{
-			ft_cd_curdir();
+			ft_cd_curdir(pwd);
 			return ;
 		}
 	}
@@ -38,28 +60,28 @@ void	ft_which_cd(char *str)
 		ft_cd_true_path(str);
 		return ;
 	}
-	ft_cd_relative_path(str);
+	ft_cd_relative_path(str, pwd);
 }
 
-void	ft_cd_curdir(void)
+void	ft_cd_curdir(t_env *pwd)
 {
-	if (!$PWD)
+	if (!pwd)
 	{
 		printf("cd: error retrieving current directory: ");
 		printf("getcwd: cannot access parent directories: ");
 		printf("No such file or directory\n");
 		return ;
 	}
-	chdir($PWD);
+	chdir(pwd->value);
 }
 
 
-void	ft_cd_backtrack()
+void	ft_cd_backtrack(t_env *pwd)
 {
 	char	*str;
 	int		i;
 
-	str = malloc (ft_strlen($PWD) + 1);
+	str = malloc (ft_strlen(pwd->value) + 1);
 	if (!str)
 	{
 		memory_alloc_error();
@@ -73,6 +95,7 @@ void	ft_cd_backtrack()
 		str[i] == '\0';
 	}
 	chdir(str);
+	free (str);
 }
 
 void	ft_cd_true_path(char *str)
@@ -87,29 +110,35 @@ void	ft_cd_true_path(char *str)
 	}
 }
 
-void	ft_cd_relative_path(char *str)
+void	ft_cd_relative_path(char *str, t_env  *pwd)
 {
+	char	*ret;
+	char	*first_half;
 	int		i;
 
 	i = 0;
-	while (i < nbr_de_fichiers) //il nous faut une variable d'env cacher qui puisse compter le nombre de fichier dans un dir, et de mettre ce nombre a la limit pour pouvoir checker les fichiers un a un
+	first_half = malloc (ft_strlen(pwd->value) + 2);
+	while (pwd->value[i])
 	{
-		if(ft_strncmp(str, /*list de fichier dans le current directory[i] */,
-			ft_strlen(str)) == 0)
-			{
-				chdir(str);
-				return ;
-			}
+		first_half[i] = pwd->value[i];
 		i++;
 	}
-	printf("cd: %s: No such file or directory\n", str);
+	first_half[i] = '/';
+	first_half[i + 1] = '\0';
+	ret = ft_strjoin(first_half, str);
+	if (chdir(ret) == -1)
+	{
+		chdir(pwd->value);
+		return ;
+	}
+	chdir(ret);
 }
 
-void	ft_cd_with_nothing()
+void	ft_cd_with_nothing(t_env *home)
 {
-	if (!$HOME)
-		return ; //si $HOME n'existe pas/nas pas de valeur, sa stop et ne retourne rien
-	chdir($HOME) //variable d'environemnent home est le meme chemin que "cd" sans aucun argument, il faut le rajouter sur le parsing au tout depart comme $PWD
+	if (!home)
+		return ;
+	chdir(home->value);
 }
 
 size_t	ft_strlen(const char *s)
