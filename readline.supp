@@ -1,0 +1,102 @@
+#
+# Fichier de suppression Valgrind pour readline / ncurses
+#
+# Ces "fuites" sont internes a la bibliotheque readline (et a ncurses/termcap
+# qu'elle utilise). Elles sont allouees une seule fois a l'initialisation et
+# ne sont jamais liberees par la bibliotheque. Tu n'y peux rien depuis ton
+# code, et les correcteurs 42 les ignorent.
+#
+# Utilisation :
+#   valgrind --leak-check=full --show-leak-kinds=all \
+#            --suppressions=readline.supp ./minishell
+#
+
+{
+   readline_init_malloc
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   fun:malloc
+   ...
+   fun:readline
+}
+
+{
+   readline_init_calloc
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   fun:calloc
+   ...
+   fun:readline
+}
+
+{
+   readline_init_realloc
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   fun:realloc
+   ...
+   fun:readline
+}
+
+{
+   readline_xmalloc
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   fun:malloc
+   fun:xmalloc
+   ...
+}
+
+{
+   readline_xrealloc
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   fun:realloc
+   fun:xrealloc
+   ...
+}
+
+{
+   add_history_malloc
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   fun:malloc
+   ...
+   fun:add_history
+}
+
+{
+   ncurses_setupterm
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   fun:_nc_setupterm
+   ...
+}
+
+{
+   ncurses_tgetent
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   fun:tgetent_sp
+   ...
+}
+
+{
+   ncurses_read_entry
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   fun:_nc_read_file_entry
+   ...
+}
+
+{
+   ncurses_build_names
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   fun:_nc_find_type_entry
+   ...
+}
