@@ -6,53 +6,101 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:16:10 by nipichon          #+#    #+#             */
-/*   Updated: 2026/05/26 09:25:40 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/06/18 12:51:11 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_n_option_launched(char *str)
+void	ft_echo_with_redirect(char **args, char *redirection)
 {
 	int	i;
+	int o;
 
-	if (!str || str[0] != '-' || str[1] != 'n')
-		return (0);
-	i = 2;
-	while (str[i])
-	{
-		if (str[i] != 'n')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-void	ft_echo(char **args)
-{
-	int	i;
-	int	line_jump;
-
+	o = open(redirection, O_WRONLY);
 	if (!args || !args[0])
 	{
 		write(1, "\n", 1);
 		return ;
 	}
-	i = 0;
-	line_jump = 1;
-	while (args[i] && is_n_option_launched(args[i]))
-	{
-		line_jump = 0;
-		i++;
-	}
+	i = 1;
 	while (args[i])
 	{
-		ft_putstr_fd(args[i], 1);
+		ft_putstr_fd(args[i], o);
 		if (args[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
-	if (line_jump)
-		write(1, "\n", 1);
+	write(1, "\n", 1);
 	return ;
+
+}
+
+void	ft_echo_n_with_redirect(char **args, char *redirection)
+{
+	int	i;
+	int o;
+
+	o = open(redirection, O_WRONLY);
+	if (!args || !args[0])
+	{
+		write(1, "\n", 1);
+		return ;
+	}
+	i = 2;
+	while (args[i])
+	{
+		ft_putstr_fd(args[i], o);
+		if (args[i + 1])
+			write(1, " ", 1);
+		i++;
+	}
+	return ;
+}
+
+void	ft_echo_n(char **args, char *redirection)
+{
+	int	i;
+
+	if (!redirection)
+	{
+		if (!args || !args[0])
+		{
+			write(1, "\n", 1);
+			return ;
+		}
+		i = 2;
+		while (args[i])
+		{
+			ft_putstr_fd(args[i], 1);
+			if (args[i + 1])
+				write(1, " ", 1);
+			i++;
+		}
+		return ;
+	}
+}
+
+void	ft_echo(char **args, char *redirection)
+{
+	int	i;
+
+	if (!redirection)
+	{
+		if (!args || !args[0])
+		{
+			write(1, "\n", 1);
+			return ;
+		}
+		i = 1;
+		while (args[i])
+		{
+			ft_putstr_fd(args[i], 1);
+			if (args[i + 1])
+				write(1, " ", 1);
+			i++;
+		}
+		write(1, "\n", 1);
+		return ;
+	}
 }
