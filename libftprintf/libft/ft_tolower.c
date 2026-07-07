@@ -1,29 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_tolower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/13 11:12:45 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/13 11:13:02 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-void	ft_env(t_env *first_env)
+int	ft_tolower(int c)
 {
-	int		i;
-	t_env	*parseur;
-
-	if (!first_env)
-		return ;
-	i = 0;
-	parseur = first_env;
-	while (parseur)
-	{
-		
-	}
-	
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
 }

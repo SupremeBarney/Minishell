@@ -1,29 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_striteri.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/26 14:42:11 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/26 14:44:41 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	ft_env(t_env *first_env)
+void	ft_striteri(char *s, void (*f)(unsigned int, char*))
 {
-	int		i;
-	t_env	*parseur;
+	unsigned int	i;
 
-	if (!first_env)
-		return ;
 	i = 0;
-	parseur = first_env;
-	while (parseur)
+	while (s[i])
 	{
-		
+		f(i, &s[i]);
+		i++;
 	}
-	
 }

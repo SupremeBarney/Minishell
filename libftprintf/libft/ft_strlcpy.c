@@ -1,29 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/13 11:09:21 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/27 17:14:11 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	ft_env(t_env *first_env)
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	int		i;
-	t_env	*parseur;
+	size_t	i;
 
-	if (!first_env)
-		return ;
 	i = 0;
-	parseur = first_env;
-	while (parseur)
+	if (size > 0)
 	{
-		
+		while (src[i] && i < size - 1)
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
 	}
-	
+	while (src[i])
+			i++;
+	return (i);
 }

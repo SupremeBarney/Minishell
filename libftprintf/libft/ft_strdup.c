@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/17 11:35:42 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/30 15:36:15 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdlib.h>
+#include <stdio.h>
 
-void	ft_env(t_env *first_env)
+char	*ft_strdup(const char *s)
 {
+	char	*dup;
 	int		i;
-	t_env	*parseur;
 
-	if (!first_env)
-		return ;
 	i = 0;
-	parseur = first_env;
-	while (parseur)
+	while (s[i])
+		i++;
+	dup = malloc(sizeof(char) * i + 1);
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s[i])
 	{
-		
+		dup[i] = s[i];
+		i++;
 	}
-	
+	dup[i] = '\0';
+	return (dup);
 }

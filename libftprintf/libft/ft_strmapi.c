@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/26 14:40:14 by alexfran          #+#    #+#             */
+/*   Updated: 2025/12/01 14:55:42 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	ft_env(t_env *first_env)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
+	char	*res;
 	int		i;
-	t_env	*parseur;
+	int		len;
 
-	if (!first_env)
-		return ;
 	i = 0;
-	parseur = first_env;
-	while (parseur)
+	len = ft_strlen(s);
+	res = malloc(sizeof(char) * len + 1);
+	if (!res)
+		return (NULL);
+	while (s[i])
 	{
-		
+		res[i] = f(i, s[i]);
+		i++;
 	}
-	
+	res[i] = '\0';
+	return (res);
 }

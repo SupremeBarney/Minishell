@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/13 11:13:20 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/28 16:59:45 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdio.h>
 
-void	ft_env(t_env *first_env)
+char	*ft_strchr(const char *s, int c)
 {
-	int		i;
-	t_env	*parseur;
+	int	i;
 
-	if (!first_env)
-		return ;
 	i = 0;
-	parseur = first_env;
-	while (parseur)
+	while (s[i])
 	{
-		
+		if (s[i] == (char)c)
+			return ((char *)(s + i));
+		i++;
 	}
-	
+	if (s[i] == '\0' && (char)c == '\0')
+		return ((char *)s + i);
+	return (NULL);
 }

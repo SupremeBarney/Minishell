@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/13 11:07:15 by alexfran          #+#    #+#             */
+/*   Updated: 2025/11/13 12:38:01 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdio.h>
 
-void	ft_env(t_env *first_env)
+void	*ft_memset(void *s, int c, size_t n)
 {
-	int		i;
-	t_env	*parseur;
-
-	if (!first_env)
-		return ;
-	i = 0;
-	parseur = first_env;
-	while (parseur)
+	while (n > 0)
 	{
-		
+		n--;
+		((unsigned char *)s)[n] = (unsigned char)c;
 	}
-	
+	return (s);
 }

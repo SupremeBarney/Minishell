@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2025/11/13 13:52:22 by alexfran          #+#    #+#             */
+/*   Updated: 2025/12/01 16:07:55 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdio.h>
+#include <string.h>
 
-void	ft_env(t_env *first_env)
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	int		i;
-	t_env	*parseur;
+	size_t	i;
 
-	if (!first_env)
-		return ;
 	i = 0;
-	parseur = first_env;
-	while (parseur)
+	if (n == 0)
+		return (0);
+	while (i < n - 1 && ((char *)s1)[i] == ((char *)s2)[i])
 	{
-		
+		i++;
 	}
-	
+	return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
 }

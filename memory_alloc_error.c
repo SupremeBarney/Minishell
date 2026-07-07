@@ -1,29 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   memory_alloc_error.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 12:42:24 by nipichon         ###   ########.fr       */
+/*   Created: 2026/04/13 14:51:25 by nipichon          #+#    #+#             */
+/*   Updated: 2026/05/26 11:27:29 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_env *first_env)
+void	memory_alloc_error(void)
 {
-	int		i;
-	t_env	*parseur;
-
-	if (!first_env)
-		return ;
-	i = 0;
-	parseur = first_env;
-	while (parseur)
-	{
-		
-	}
-	
+	write(1, "Error\n", 6);
+	write(1, "Not enough memory available\n", 28);
 }
