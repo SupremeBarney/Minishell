@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/18 12:59:26 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/07 09:44:02 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <unistd.h>
+# include <fcntl.h>
 
 typedef struct s_cmd
 {
@@ -126,5 +127,39 @@ void			tokenise_loop(char *str, t_token **tokens,
 void			tokenisation(char *str, t_token **tokens, t_shell shell);
 void			free_env(t_shell *shell);
 void			main_loop(char **envp);
+void			command_control(t_cmd *com_to_exec, t_shell *shell);
+char			*get_env_value(t_env *env, char *name);
+void			set_env(t_env **var, char **envp);
+t_env			*new_env_node(char *envp_entry);
+void			free_chars(char **tab);
+char			**first_equal(char *str);
+void			ft_cd(char *str, t_env *first_env);
+void			ft_which_cd(char *str, t_env *pwd, t_env *home);
+void			ft_cd_curdir(t_env *pwd);
+void			ft_echo_with_redirect(char **args, char *redirection);
+void			ft_echo_n_with_redirect(char **args, char *redirection);
+void			ft_echo_n(char **args, char *redirection);
+void			ft_echo(char **args, char *redirection);
+void			ft_exec(t_env *path, char *str, char **argv, t_env *first_env);
+void			ft_exec_path(t_env *path, char **argv, t_env *env, char *str);
+void			ft_free_split(char **split, int i);
+void			ft_exec_absolute(char **argv, t_env *env, char *str);
+void			ft_exec_relative(char **argv, t_env *env, char *str);
+t_env			*ft_find_pwd(t_env *env);
+void			ft_exit(int exit_status);
+void			ft_export(t_env *first_env, char *name, char *word);
+void			ft_free_env(t_env *var);
+void			ft_pwd(t_env *pwd);
+void			ft_unset(t_env *first_env, char *var_to_unset);
+void			ft_unset_two(t_env *first_env, char *var_to_unset);
+void			memory_alloc_error(void);
+void			ft_env(t_env *first_env);
+void			ft_cd(char *str, t_env *first_env);
+void			ft_which_cd(char *str, t_env *pwd, t_env *home);
+void			ft_cd_curdir(t_env *pwd);
+void			ft_cd_backtrack(t_env *pwd);
+void			ft_cd_true_path(char *str);
+void			ft_cd_relative_path(char *str, t_env *pwd);
+void			ft_cd_with_nothing(t_env *home);
 
 #endif
