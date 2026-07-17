@@ -3,41 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 13:30:31 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/03 13:43:53 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/17 15:29:30 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_unset(t_env *first_env, char *var_to_unset)
+void	ft_unset(t_env **first_env, char *var_to_unset)
 {
 	t_env	*tmp;
 
 	if (!first_env || !var_to_unset)
 		return ;
-	if (first_env->name == var_to_unset)
+	if (ft_strncmp((*first_env)->name, var_to_unset,
+			ft_strlen(var_to_unset) + 1) == 0)
 	{
-		tmp = first_env;
-		first_env = first_env->next;
+		tmp = *first_env;
+		*first_env = (*first_env)->next;
 		ft_free_env(tmp);
 		return ;
 	}
 	ft_unset_two(first_env, var_to_unset);
 }
 
-void	ft_unset_two(t_env *first_env, char *var_to_unset)
+void	ft_unset_two(t_env **first_env, char *var_to_unset)
 {
 	t_env	*finder;
 	t_env	*prev;
 
-	prev = first_env;
-	finder = first_env->next;
+	prev = *first_env;
+	finder = (*first_env)->next;
 	while (finder)
 	{
-		if (finder->name == var_to_unset)
+		if (ft_strncmp(finder->name, var_to_unset,
+				ft_strlen(var_to_unset) + 1) == 0)
 		{
 			if (finder->next)
 				prev->next = finder->next;

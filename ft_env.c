@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/07 09:45:47 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/17 12:41:09 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	ft_env(t_env *first_env)
 			write(1, &parseur->value[i], 1);
 			i++;
 		}
+		write(1, "\n", 1);
 		parseur = parseur->next;
 	}
 }

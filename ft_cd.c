@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/07 09:44:57 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/17 16:04:55 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void	ft_which_cd(char *str, t_env *pwd, t_env *home)
 	{
 		if (str[1] == '.')
 		{
-			ft_cd_backtrack(pwd);
+			if (str[2] == '\0')
+				ft_cd_backtrack(pwd);
 		}
 		if (str[1] == '\0')
 		{
@@ -75,7 +76,6 @@ void	ft_cd_curdir(t_env *pwd)
 	chdir(pwd->value);
 }
 
-
 void	ft_cd_backtrack(t_env *pwd)
 {
 	char	*str;
@@ -87,12 +87,13 @@ void	ft_cd_backtrack(t_env *pwd)
 		memory_alloc_error();
 		return ;
 	}
+	str = pwd->value;
 	i = ft_strlen(str) - 1;
 	while (str[i] != '/' && i != 0)
 		i--;
 	if (str[i] == '/')
 		str[i] = '\0';
-	chdir(str);
+	printf("%d", chdir(str));
 	free (str);
 }
 

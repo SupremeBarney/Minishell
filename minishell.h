@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/07 09:44:02 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/17 15:17:09 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,11 +147,11 @@ void			ft_exec_absolute(char **argv, t_env *env, char *str);
 void			ft_exec_relative(char **argv, t_env *env, char *str);
 t_env			*ft_find_pwd(t_env *env);
 void			ft_exit(int exit_status);
-void			ft_export(t_env *first_env, char *name, char *word);
+void			ft_export(t_env **env, char *name);
 void			ft_free_env(t_env *var);
 void			ft_pwd(t_env *pwd);
-void			ft_unset(t_env *first_env, char *var_to_unset);
-void			ft_unset_two(t_env *first_env, char *var_to_unset);
+void			ft_unset(t_env **first_env, char *var_to_unset);
+void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);
 void			ft_env(t_env *first_env);
 void			ft_cd(char *str, t_env *first_env);

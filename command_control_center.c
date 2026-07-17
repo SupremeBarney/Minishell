@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_control_center.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/07 09:33:18 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/17 15:35:01 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ void	command_control(t_cmd *com_to_exec,
 	if (ft_strncmp(com_to_exec->args[0], "exit", 5) == 0)
 		return (ft_exit(shell->exit_status));
 	if (ft_strncmp(com_to_exec->args[0], "export", 7) == 0)
-		return (ft_export(shell->env, com_to_exec->args[1], com_to_exec->args[2]));
+		return (ft_export(&shell->env, com_to_exec->args[1]));
 	if (ft_strncmp(com_to_exec->args[0], "pwd", 4) == 0)
 		return (ft_pwd(shell->env));
 	if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
-		return (ft_unset(shell->env, com_to_exec->args[0]));
+		return (ft_unset(&shell->env, com_to_exec->args[1]));
 }

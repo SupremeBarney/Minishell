@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/06/15 12:51:03 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/17 12:32:16 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	process_line(char *read_line, t_shell *shell)
 		return (free_tokens(tokens), ft_putstr_fd("Wrong Syntax\n", 2), 0);
 	if (add_cmd_node(*shell, &cmd, tokens) == 1)
 		return (free_tokens(tokens), 0);
+	command_control(cmd, shell);
 	free_tokens(tokens);
 	free_cmd(cmd);
 	return (0);

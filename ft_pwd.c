@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 13:23:01 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/07 09:56:49 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/17 12:33:43 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_pwd(t_env *pwd) //en argument, in nous faut au moin $PWD, mais je pense que pour chaque faction avoir la liste de variable d'environement serai bien
 {
 	char	*ret;
-	
+
 	ret = NULL;
 	if (!pwd)
 		return ;
@@ -23,7 +23,7 @@ void	ft_pwd(t_env *pwd) //en argument, in nous faut au moin $PWD, mais je pense 
 	{
 		ret = get_env_value(pwd, "PWD");
 		if (ret)
-			printf("%s", ret);
+			printf("%s\n", ret);
 	}
 }
 
