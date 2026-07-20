@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/17 16:04:55 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/20 15:54:36 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	ft_which_cd(char *str, t_env *pwd, t_env *home)
 {
 	if (!str || str[0] == '\n')
 	{
-		ft_cd_with_nothing(home);
+		ft_cd_with_nothing(home, pwd);
 		return ;
 	}
 	else if (str[0] == '.')
@@ -133,9 +133,10 @@ void	ft_cd_relative_path(char *str, t_env *pwd)
 	chdir(ret);
 }
 
-void	ft_cd_with_nothing(t_env *home)
+void	ft_cd_with_nothing(t_env *home, t_env *pwd)
 {
 	if (!home)
 		return ;
 	chdir(home->value);
+	pwd->value = home->value;
 }
