@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/20 16:46:26 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/20 17:24:31 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void	ft_which_cd(char *str, t_env *pwd, t_env *home)
 	{
 		if (str[1] == '.')
 		{
-			if (str[2] == '\0')
-				ft_cd_backtrack(pwd);
+			if (str[2] == '\0' || str[2] =='/')
+				ft_cd_backtrack(str, pwd, home);
 		}
 		if (str[1] == '\0')
 		{
@@ -79,11 +79,12 @@ void	ft_cd_curdir(t_env *pwd)
 	chdir(pwd->value);
 }
 
-void	ft_cd_backtrack(t_env *pwd)
+void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home)
 {
 	int		i;
 	int		slash;
 	int		s;
+	char	*rep;
 
 	i = 0;
 	slash = 0;
@@ -110,6 +111,18 @@ void	ft_cd_backtrack(t_env *pwd)
 		i++;
 	}
 	chdir(pwd->value);
+	i = 3;
+	if (str[2] && str[2] == '/')
+	{
+		rep = malloc(ft_strlen(str) - 3);
+		while (str[i])
+		{
+			rep[i - 3] = str[i];
+			i++;
+		}
+		str = ft_strdup(rep);
+		ft_which_cd(str, pwd, home);
+	}
 }
 
 void	ft_cd_true_path(char *str, t_env *pwd)
