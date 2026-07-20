@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/20 15:54:36 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/20 16:46:26 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,13 @@ void	ft_which_cd(char *str, t_env *pwd, t_env *home)
 	}
 	else if (str[0] == '/')
 	{
-		ft_cd_true_path(str);
+		ft_cd_true_path(str, pwd);
 		return ;
 	}
-	ft_cd_relative_path(str, pwd);
+	else
+	{
+		ft_cd_relative_path(str, pwd);
+	}
 }
 
 void	ft_cd_curdir(t_env *pwd)
@@ -78,34 +81,48 @@ void	ft_cd_curdir(t_env *pwd)
 
 void	ft_cd_backtrack(t_env *pwd)
 {
-	char	*str;
 	int		i;
+	int		slash;
+	int		s;
 
-	str = malloc (ft_strlen(pwd->value) + 1);
-	if (!str)
+	i = 0;
+	slash = 0;
+	s = 0;
+	while (pwd->value[i])
 	{
-		memory_alloc_error();
-		return ;
+		if (pwd->value[i] == '/')
+			slash++;
+		i++;
 	}
-	str = pwd->value;
-	i = ft_strlen(str) - 1;
-	while (str[i] != '/' && i != 0)
-		i--;
-	if (str[i] == '/')
-		str[i] = '\0';
-	printf("%d", chdir(str));
-	free (str);
+	i = 0;
+	while (pwd->value[i])
+	{
+		if (pwd->value[i] == '/')
+			s++;
+		if (s > 0 && s == slash)
+		{
+			while (pwd->value[i])
+			{
+				pwd->value[i] = '\0';
+				i++;
+			}
+		}
+		i++;
+	}
+	chdir(pwd->value);
 }
 
-void	ft_cd_true_path(char *str)
+void	ft_cd_true_path(char *str, t_env *pwd)
 {
-	if(chdir(str) == -1)
+	printf("%s\n", str); 
+	if (chdir(str) == -1)
 	{
 		printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
 	}
 	else
 	{
 		chdir(str);
+		pwd->value = ft_strdup(str);
 	}
 }
 
@@ -131,6 +148,7 @@ void	ft_cd_relative_path(char *str, t_env *pwd)
 		return ;
 	}
 	chdir(ret);
+	pwd->value = ret;
 }
 
 void	ft_cd_with_nothing(t_env *home, t_env *pwd)
