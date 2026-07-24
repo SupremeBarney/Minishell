@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/17 15:17:09 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/24 17:07:40 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,11 +140,16 @@ void			ft_echo_with_redirect(char **args, char *redirection);
 void			ft_echo_n_with_redirect(char **args, char *redirection);
 void			ft_echo_n(char **args, char *redirection);
 void			ft_echo(char **args, char *redirection);
-void			ft_exec(t_env *path, char *str, char **argv, t_env *first_env);
-void			ft_exec_path(t_env *path, char **argv, t_env *env, char *str);
-void			ft_free_split(char **split, int i);
-void			ft_exec_absolute(char **argv, t_env *env, char *str);
-void			ft_exec_relative(char **argv, t_env *env, char *str);
+void			ft_exec(char *str, char **args, t_env *first_env);
+void			ft_which_exec(char *str, char **args, 
+					char **envp, char *pwd);
+void			ft_exec_true_path(char *str, char **args, char **envp);
+void			ft_exec_relative_path(char *str, char **args,
+					char **envp, char *pwd);
+char			*ft_enlever_str(char *str);
+char			*ft_rajouter_str(char *str);
+int				ft_is_execute(char *str);
+char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
 void			ft_exit(int exit_status);
 void			ft_export(t_env **env, char *name);
@@ -157,9 +162,9 @@ void			ft_env(t_env *first_env);
 void			ft_cd(char *str, t_env *first_env);
 void			ft_which_cd(char *str, t_env *pwd, t_env *home);
 void			ft_cd_curdir(t_env *pwd);
-void			ft_cd_backtrack(t_env *pwd);
-void			ft_cd_true_path(char *str);
+void			ft_cd_backtrack(char *str, t_env *pwd, t_env *home);
+void			ft_cd_true_path(char *str, t_env *pwd);
 void			ft_cd_relative_path(char *str, t_env *pwd);
-void			ft_cd_with_nothing(t_env *home);
+void			ft_cd_with_nothing(t_env *home, t_env *pwd);
 
 #endif
