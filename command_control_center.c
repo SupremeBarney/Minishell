@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/17 15:35:01 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/24 18:23:24 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ void	command_control(t_cmd *com_to_exec,
 	}
 	if (ft_strncmp(com_to_exec->args[0], "echo", 5) == 0)
 	{
-		if (ft_strncmp(com_to_exec->args[1], "-n", 3) == 0)
+		/*if (ft_strncmp(com_to_exec->args[0], "-n", 3) == 0)
 			ft_echo_n(com_to_exec->args, com_to_exec->output);
-		else
-			ft_echo(com_to_exec->args, com_to_exec->output);
+		else*/
+		ft_echo(com_to_exec->args, com_to_exec->output);
 		return ;
 	}
 	if (ft_strncmp(com_to_exec->args[0], "env", 4) == 0)
