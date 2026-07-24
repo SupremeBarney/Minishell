@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_control_center.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/24 18:23:24 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/24 18:28:53 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	command_control(t_cmd *com_to_exec,
 	}
 	if (ft_strncmp(com_to_exec->args[0], "echo", 5) == 0)
 	{
-		/*if (ft_strncmp(com_to_exec->args[0], "-n", 3) == 0)
+		/*if (ft_strncmp(com_to_exec->args[1], "-n", 3) == 0)
 			ft_echo_n(com_to_exec->args, com_to_exec->output);
 		else*/
 		ft_echo(com_to_exec->args, com_to_exec->output);
@@ -38,4 +38,13 @@ void	command_control(t_cmd *com_to_exec,
 		return (ft_pwd(shell->env));
 	if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
 		return (ft_unset(&shell->env, com_to_exec->args[1]));
+	if (ft_is_execute(com_to_exec->args[0]) == 1)
+		return (ft_exec(com_to_exec->args[0], com_to_exec->args, shell->env));
+}
+
+int	ft_is_execute(char *str)
+{
+	if ((str[0] == '.' && str[1]  == '/') || (str[0] == '/'))
+		return (1);
+	return (0);
 }
