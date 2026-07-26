@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/24 17:07:40 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/25 15:42:59 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_shell
 {
 	t_env	*env;
 	int		exit_status;
+	char	*read_line;
 }	t_shell;
 
 typedef struct s_parse
@@ -127,7 +128,8 @@ void			tokenise_loop(char *str, t_token **tokens,
 void			tokenisation(char *str, t_token **tokens, t_shell shell);
 void			free_env(t_shell *shell);
 void			main_loop(char **envp);
-void			command_control(t_cmd *com_to_exec, t_shell *shell);
+void			command_control(t_cmd *com_to_exec,
+					t_shell *shell, t_token *tokens);
 char			*get_env_value(t_env *env, char *name);
 void			set_env(t_env **var, char **envp);
 t_env			*new_env_node(char *envp_entry);
@@ -141,7 +143,7 @@ void			ft_echo_n_with_redirect(char **args, char *redirection);
 void			ft_echo_n(char **args, char *redirection);
 void			ft_echo(char **args, char *redirection);
 void			ft_exec(char *str, char **args, t_env *first_env);
-void			ft_which_exec(char *str, char **args, 
+void			ft_which_exec(char *str, char **args,
 					char **envp, char *pwd);
 void			ft_exec_true_path(char *str, char **args, char **envp);
 void			ft_exec_relative_path(char *str, char **args,
@@ -151,7 +153,8 @@ char			*ft_rajouter_str(char *str);
 int				ft_is_execute(char *str);
 char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
-void			ft_exit(int exit_status);
+void			ft_exit(int exit_status, t_token *tokens,
+					t_cmd *cmd, t_shell shell);
 void			ft_export(t_env **env, char *name);
 void			ft_free_env(t_env *var);
 void			ft_pwd(t_env *pwd);

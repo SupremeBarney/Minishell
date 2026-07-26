@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/06/11 00:00:00 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/25 16:17:15 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,25 +95,5 @@ int	valid_nb_quote(char *str)
 	}
 	if (quote_flag)
 		return (1);
-	return (0);
-}
-
-int	valid_syntax(t_token *tokens)
-{
-	t_token	*tmp;
-
-	tmp = tokens;
-	if (tmp->token_type == PIPE)
-		return (1);
-	while (tmp)
-	{
-		if (((tmp->token_type >= PIPE && tmp->token_type <= REDIR_OUT_APPEND)
-				&& !tmp->next)
-			|| (tmp->token_type == PIPE && tmp->next->token_type == PIPE)
-			|| ((tmp->token_type != WORD && tmp->token_type != PIPE)
-				&& tmp->next->token_type != WORD))
-			return (1);
-		tmp = tmp->next;
-	}
 	return (0);
 }

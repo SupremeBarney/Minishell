@@ -6,11 +6,48 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/07/17 12:32:16 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/25 20:00:54 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	slash_parser(char *read_line)
+{
+	if (read_line[0] == '/')
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(read_line, 2);
+		ft_putstr_fd("\": Is a directory\n", 2);
+		return (1);
+	}
+	return (0);
+}
+
+int	pipe_with_space(char *read_line)
+{
+	if (read_line[0] == '|' && read_line[1] == ' ')
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
+		return (1);
+	}
+	return (0);
+}
+
+int	ampersand_parser(char *read_line)
+{
+	if (read_line[0] == '&')
+	{
+		if (read_line[1] == '&')
+		{
+			ft_putstr_fd("bash: syntax error near unexpected token `&&'\n", 2);
+			return (1);
+		}
+		ft_putstr_fd("bash: syntax error near unexpected token `&'\n", 2);
+		return (1);
+	}
+	return (0);
+}
 
 int	process_line(char *read_line, t_shell *shell)
 {
@@ -19,17 +56,18 @@ int	process_line(char *read_line, t_shell *shell)
 
 	tokens = NULL;
 	cmd = NULL;
-	if (valid_nb_quote(read_line))
-		return (0);
+	if (valid_nb_quote(read_line) || slash_parser(read_line)
+		|| pipe_with_space(read_line) || ampersand_parser(read_line))
+		return (add_history(read_line), 0);
 	add_history(read_line);
 	tokenisation(read_line, &tokens, *shell);
 	if (!tokens)
 		return (0);
 	if (valid_syntax(tokens) == 1)
-		return (free_tokens(tokens), ft_putstr_fd("Wrong Syntax\n", 2), 0);
+		return (free_tokens(tokens), 0);
 	if (add_cmd_node(*shell, &cmd, tokens) == 1)
 		return (free_tokens(tokens), 0);
-	command_control(cmd, shell);
+	command_control(cmd, shell, tokens);
 	free_tokens(tokens);
 	free_cmd(cmd);
 	return (0);
@@ -42,7 +80,7 @@ void	main_loop(char **envp)
 
 	shell.env = NULL;
 	set_env(&shell.env, envp);
-	shell.exit_status = 42;
+	shell.exit_status = 0;
 	setup_signals();
 	while (1)
 	{
