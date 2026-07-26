@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/07/25 20:00:54 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/26 15:23:09 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ int	process_line(char *read_line, t_shell *shell)
 
 	tokens = NULL;
 	cmd = NULL;
-	if (valid_nb_quote(read_line) || slash_parser(read_line)
-		|| pipe_with_space(read_line) || ampersand_parser(read_line))
+	if (slash_parser(read_line) || pipe_with_space(read_line)
+		|| ampersand_parser(read_line))
 		return (add_history(read_line), 0);
 	add_history(read_line);
 	tokenisation(read_line, &tokens, *shell);

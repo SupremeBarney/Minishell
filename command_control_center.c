@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/25 19:14:07 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/26 16:51:45 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 void	command_control(t_cmd *com_to_exec,
 							t_shell *shell, t_token *tokens)
 {
+	if (!com_to_exec->args[0])
+		return ;
 	if (ft_strncmp(com_to_exec->args[0], "cd", 3) == 0)
 	{
 		ft_cd(com_to_exec->args[1], shell->env);

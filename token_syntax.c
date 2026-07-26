@@ -41,6 +41,21 @@ static int	check_double_redir(t_token *tmp)
 	return (0);
 }
 
+static int	unexpected_token(t_token_type type)
+{
+	if (type == REDIR_IN)
+		ft_putstr_fd("bash: syntax error near unexpected token `<'\n", 2);
+	else if (type == REDIR_OUT)
+		ft_putstr_fd("bash: syntax error near unexpected token `>'\n", 2);
+	else if (type == REDIR_OUT_APPEND)
+		ft_putstr_fd("bash: syntax error near unexpected token `>>'\n", 2);
+	else if (type == HEREDOC)
+		ft_putstr_fd("bash: syntax error near unexpected token `<<'\n", 2);
+	else if (type == PIPE)
+		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
+	return (1);
+}
+
 static int	check_token_syntax(t_token *tmp)
 {
 	if ((tmp->token_type >= REDIR_IN
@@ -57,10 +72,10 @@ static int	check_token_syntax(t_token *tmp)
 		return (1);
 	if (tmp->token_type == PIPE && tmp->next
 		&& tmp->next->token_type == PIPE)
-		return (1);
+		return (unexpected_token(PIPE));
 	if ((tmp->token_type != WORD && tmp->token_type != PIPE)
 		&& tmp->next && tmp->next->token_type != WORD)
-		return (1);
+		return (unexpected_token(tmp->next->token_type));
 	return (0);
 }
 

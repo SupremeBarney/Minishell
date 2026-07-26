@@ -46,7 +46,8 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 	i = 0;
 	while (cur_token)
 	{
-		if (cur_token->token_type == WORD)
+		if (cur_token->token_type == WORD && (cur_token->had_quotes
+				|| cur_token->token[0]))
 			cur_cmd->args[i++] = ft_strdup(cur_token->token);
 		else if (cur_token->token_type == PIPE)
 		{

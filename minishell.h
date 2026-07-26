@@ -57,6 +57,7 @@ typedef struct s_token
 {
 	char			*token;
 	t_token_type	token_type;
+	int				had_quotes;
 	struct s_token	*next;
 }	t_token;
 
@@ -110,7 +111,7 @@ t_env			*new_env_node(char *envp_entry);
 void			set_env(t_env **var, char **envp);
 char			*get_env_value(t_env *env, char *name);
 void			display_env(t_env *var);
-char			*handle_dollar(char *str, int *i, t_shell shell);
+char			*handle_dollar(char *str, int *i, t_shell shell, int flag);
 char			*expansion(char *str, t_shell shell);
 void			add_node(t_token **tokens, char *token, t_shell shell);
 void			handle_left_redir(char *str, t_token **tokens,

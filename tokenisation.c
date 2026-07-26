@@ -46,6 +46,7 @@ void	add_node(t_token **tokens, char *token, t_shell shell)
 	if (!new_token)
 		return ;
 	new_token->token_type = which_type(token);
+	new_token->had_quotes = (nb_of_quotes(token) > 0);
 	if (new_token->token_type == WORD)
 		new_token->token = expansion(token, shell);
 	else

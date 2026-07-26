@@ -27,7 +27,7 @@ char	*heredoc_expansion(char *str, t_shell shell)
 	{
 		if (str[i] == '$')
 		{
-			tmp_dollar = handle_dollar(str, &i, shell);
+			tmp_dollar = handle_dollar(str, &i, shell, flag);
 			res = strjoin_free(res, tmp_dollar);
 			free(tmp_dollar);
 		}
