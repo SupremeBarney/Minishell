@@ -51,6 +51,7 @@ typedef struct s_environment_variable
 	char							*name;
 	char							*value;
 	struct s_environment_variable	*next;
+	unsigned int					equal;
 }	t_env;
 
 typedef struct s_token
@@ -156,7 +157,7 @@ char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
 void			ft_exit(int exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
-void			ft_export(t_env **env, char *name);
+void			ft_export(t_env **env, char **name);
 void			ft_free_env(t_env *var);
 void			ft_pwd(t_env *pwd);
 void			ft_unset(t_env **first_env, char *var_to_unset);

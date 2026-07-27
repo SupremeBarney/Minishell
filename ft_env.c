@@ -29,7 +29,8 @@ void	ft_env(t_env *first_env)
 			i++;
 		}
 		i = 0;
-		write(1, "=", 1);
+		if (parseur->equal == 1)
+			write(1, "=", 1);
 		while (parseur->value[i])
 		{
 			write(1, &parseur->value[i], 1);

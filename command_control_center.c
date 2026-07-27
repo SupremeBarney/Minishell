@@ -17,12 +17,12 @@ void	command_control(t_cmd *com_to_exec,
 {
 	if (!com_to_exec->args[0])
 		return ;
-	if (ft_strncmp(com_to_exec->args[0], "cd", 3) == 0)
+	else if (ft_strncmp(com_to_exec->args[0], "cd", 3) == 0)
 	{
 		ft_cd(com_to_exec->args[1], shell->env);
 		return ;
 	}
-	if (ft_strncmp(com_to_exec->args[0], "echo", 5) == 0)
+	else if (ft_strncmp(com_to_exec->args[0], "echo", 5) == 0)
 	{
 		/*if (ft_strncmp(com_to_exec->args[1], "-n", 3) == 0)
 			ft_echo_n(com_to_exec->args, com_to_exec->output);
@@ -30,17 +30,17 @@ void	command_control(t_cmd *com_to_exec,
 		ft_echo(com_to_exec->args, com_to_exec->output);
 		return ;
 	}
-	if (ft_strncmp(com_to_exec->args[0], "env", 4) == 0)
+	else if (ft_strncmp(com_to_exec->args[0], "env", 4) == 0)
 		return (ft_env(shell->env));
-	if (ft_strncmp(com_to_exec->args[0], "exit", 5) == 0)
+	else if (ft_strncmp(com_to_exec->args[0], "exit", 5) == 0)
 		return (ft_exit(shell->exit_status, tokens, com_to_exec, *shell));
-	if (ft_strncmp(com_to_exec->args[0], "export", 7) == 0)
-		return (ft_export(&shell->env, com_to_exec->args[1]));
-	if (ft_strncmp(com_to_exec->args[0], "pwd", 4) == 0)
+	else if (ft_strncmp(com_to_exec->args[0], "export", 7) == 0)
+		return (ft_export(&shell->env, com_to_exec->args));
+	else if (ft_strncmp(com_to_exec->args[0], "pwd", 4) == 0)
 		return (ft_pwd(shell->env));
-	if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
+	else if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
 		return (ft_unset(&shell->env, com_to_exec->args[1]));
-	if (ft_is_execute(com_to_exec->args[0]) == 1)
+	else if (ft_is_execute(com_to_exec->args[0]) == 1)
 		return (ft_exec(com_to_exec->args[0], com_to_exec->args, shell->env));
 	else
 	{

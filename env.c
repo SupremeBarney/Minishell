@@ -84,6 +84,7 @@ void	set_env(t_env **var, char **envp)
 			*var = new_var;
 		else
 			cur->next = new_var;
+		new_var->equal = 1;
 		cur = new_var;
 		i++;
 	}
