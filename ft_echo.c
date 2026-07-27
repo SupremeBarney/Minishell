@@ -12,6 +12,22 @@
 
 #include "minishell.h"
 
+static int		ft_check_if_n(char *str)
+{
+	int	i;
+
+	i = 1;
+	if (str[0] != '-')
+		return (0);
+	while (str[i])
+	{
+		if(str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	ft_echo_with_redirect(char **args, char *redirection)
 {
 	int	i;
@@ -61,7 +77,10 @@ void	ft_echo_n_with_redirect(char **args, char *redirection)
 void	ft_echo_n(char **args, char *redirection)
 {
 	int	i;
+	int	j;
+	int	count;
 
+	count = 0;
 	if (!redirection)
 	{
 		if (!args || !args[0])
@@ -72,9 +91,19 @@ void	ft_echo_n(char **args, char *redirection)
 		i = 2;
 		while (args[i])
 		{
-			ft_putstr_fd(args[i], 1);
-			if (args[i + 1])
-				write(1, " ", 1);
+			if (count == 1 || ft_check_if_n(args[i]) != 1)
+			{
+				count = 1;
+				j = 0;
+				while(args[i][j])
+				{
+					if (args[i][j] != '\\')
+						write (1, &args[i][j], 1);
+					j++;
+				}
+				if (args[i + 1])
+					write(1, " ", 1);
+			}
 			i++;
 		}
 		return ;
@@ -84,7 +113,13 @@ void	ft_echo_n(char **args, char *redirection)
 void	ft_echo(char **args, char *redirection)
 {
 	int	i;
+	int j;
 
+	if (ft_check_if_n(args[1]) == 1)
+	{
+		ft_echo_n(args, redirection);
+		return ;
+	}
 	if (!redirection)
 	{
 		if (!args || !args[0])
@@ -95,7 +130,13 @@ void	ft_echo(char **args, char *redirection)
 		i = 1;
 		while (args[i])
 		{
-			ft_putstr_fd(args[i], 1);
+			j = 0;
+			while(args[i][j])
+			{
+				if (args[i][j] != '\\')
+					write (1, &args[i][j], 1);
+				j++;
+			}
 			if (args[i + 1])
 				write(1, " ", 1);
 			i++;
