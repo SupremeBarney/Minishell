@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/26 16:51:45 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/28 18:21:08 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	command_control(t_cmd *com_to_exec,
 	else if (ft_strncmp(com_to_exec->args[0], "export", 7) == 0)
 		return (ft_export(&shell->env, com_to_exec->args));
 	else if (ft_strncmp(com_to_exec->args[0], "pwd", 4) == 0)
-		return (ft_pwd(shell->env));
+		return (ft_pwd(shell->env, com_to_exec->args));
 	else if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
 		return (ft_unset(&shell->env, com_to_exec->args[1]));
 	else if (ft_is_execute(com_to_exec->args[0]) == 1)

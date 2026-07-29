@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/25 15:42:59 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/28 18:19:19 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void			ft_exit(int exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
 void			ft_export(t_env **env, char **name);
 void			ft_free_env(t_env *var);
-void			ft_pwd(t_env *pwd);
+void			ft_pwd(t_env *pwd, char **args);
 void			ft_unset(t_env **first_env, char *var_to_unset);
 void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);

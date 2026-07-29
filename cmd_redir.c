@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/06/12 12:34:06 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/28 17:54:38 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,3 +59,4 @@ int	handle_redir(t_cmd **cmd, t_token **cur_token,
 		redir_out_append(cur_token, cur_cmd);
 	return (1);
 }
+
