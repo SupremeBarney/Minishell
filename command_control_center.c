@@ -3,16 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   command_control_center.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 18:20:20 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 21:09:04 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	command_control(t_cmd *com_to_exec,
+int	apply_redirections(t_cmd *cmd)
+{
+	int	fd;
+
+	if (cmd->input)
+	{
+		fd = open(cmd->input, O_RDONLY);
+		if (fd == -1)
+			return (perror(cmd->input), -1);
+		(dup2(fd, STDIN_FILENO), close(fd));
+	}
+	if (cmd->output)
+	{
+		fd = open(cmd->output, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+		if (fd == -1)
+			return (perror(cmd->output), -1);
+		(dup2(fd, STDOUT_FILENO), close(fd));
+	}
+	if (cmd->output_append)
+	{
+		fd = open(cmd->output_append, O_CREAT | O_WRONLY | O_APPEND, 0666);
+		if (fd == -1)
+			return (perror(cmd->output_append), -1);
+		(dup2(fd, STDOUT_FILENO), close(fd));
+	}
+	return (0);
+}
+
+void	dispatch_command(t_cmd *com_to_exec,
 							t_shell *shell, t_token *tokens)
 {
 	if (!com_to_exec->args[0])
@@ -27,7 +55,7 @@ void	command_control(t_cmd *com_to_exec,
 		/*if (ft_strncmp(com_to_exec->args[1], "-n", 3) == 0)
 			ft_echo_n(com_to_exec->args, com_to_exec->output);
 		else*/
-		ft_echo(com_to_exec->args, com_to_exec->output);
+		ft_echo(com_to_exec->args);
 		return ;
 	}
 	else if (ft_strncmp(com_to_exec->args[0], "env", 4) == 0)
@@ -50,6 +78,29 @@ void	command_control(t_cmd *com_to_exec,
 		ft_putstr_fd(com_to_exec->args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 	}
+}
+
+void	command_control(t_cmd *com_to_exec,
+							t_shell *shell, t_token *tokens)
+{
+	int	saved_stdin;
+	int	saved_stdout;
+
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	if (apply_redirections(com_to_exec) == -1)
+	{
+		dup2(saved_stdin, STDIN_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdin);
+		close(saved_stdout);
+		return ;
+	}
+	dispatch_command(com_to_exec, shell, tokens);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
 }
 
 int	ft_is_execute(char *str, t_env *first_env)

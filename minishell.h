@@ -137,10 +137,8 @@ void			set_env(t_env **var, char **envp);
 t_env			*new_env_node(char *envp_entry);
 void			free_chars(char **tab);
 char			**first_equal(char *str);
-void			ft_echo_with_redirect(char **args, char *redirection);
-void			ft_echo_n_with_redirect(char **args, char *redirection);
-void			ft_echo_n(char **args, char *redirection);
-void			ft_echo(char **args, char *redirection);
+void			ft_echo_n(char **args);
+void			ft_echo(char **args);
 void			ft_exec(char *str, char **args, t_env *first_env);
 void			ft_which_exec(char *str, char **args,
 					char **envp, char *pwd);
