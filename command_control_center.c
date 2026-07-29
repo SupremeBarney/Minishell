@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 17:46:20 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 18:20:20 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	command_control(t_cmd *com_to_exec,
 		return ;
 	else if (ft_strncmp(com_to_exec->args[0], "cd", 3) == 0)
 	{
-		ft_cd(com_to_exec->args[1], shell->env);
+		ft_cd(com_to_exec->args[1], shell->env, com_to_exec->args);
 		return ;
 	}
 	else if (ft_strncmp(com_to_exec->args[0], "echo", 5) == 0)

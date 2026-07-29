@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/25 18:37:40 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/29 19:00:59 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,20 @@
 
 // pour tout les fonctions il faudra rajouter un moyen d'avoir tout les variable d'environement
 
-void	ft_cd(char *str, t_env *first_env)
+void	ft_cd(char *str, t_env *first_env, char **args)
 {
 	t_env	*pwd;
 	t_env	*home;
+	t_env	*old_pwd;
 	t_env	*parseur;
 
 	if (!first_env)
 		ft_which_cd(str, NULL, NULL);
+	if (args[2])
+	{
+		printf ("bash: cd: too many arguments\n");
+		return ;
+	}
 	parseur = first_env;
 	pwd = NULL;
 	home = NULL;
@@ -31,8 +37,11 @@ void	ft_cd(char *str, t_env *first_env)
 			pwd = parseur;
 		if (ft_strncmp("HOME", parseur->name, 5) == 0)
 			home = parseur;
+		if (ft_strncmp("OLDPWD", parseur->name, 7) == 0)
+			old_pwd = parseur;
 		parseur = parseur->next;
 	}
+	old_pwd->value = ft_strdup(pwd->value);
 	ft_which_cd(str, pwd, home);
 }
 
@@ -127,7 +136,6 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home)
 
 void	ft_cd_true_path(char *str, t_env *pwd)
 {
-	printf("%s\n", str); 
 	if (chdir(str) == -1)
 	{
 		printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard

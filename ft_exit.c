@@ -3,17 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:26:13 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/25 15:49:45 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/29 19:30:56 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static	int	ft_is_exitable_char_check(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	while (str[i])
+	{
+		if (str[i] > '9' || str[i] < '0')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	ft_exit(int exit_status, t_token *tokens, t_cmd *cmd, t_shell shell)
 {
+	if (ft_is_exitable_char_check(cmd->args[1]) == 0)
+	{
+		printf("bash: exit: \"%s\": numeric argument required\n", cmd->args[1]);
+		return ;
+	}
+	if (cmd->args[2])
+	{
+		printf("bash: exit: too many arguments\n");
+		return ;
+	}
 	free_tokens(tokens);
 	free_cmd(cmd);
 	free_env(&shell);
