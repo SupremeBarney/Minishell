@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 10:09:28 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/24 17:36:13 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:57:14 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	ft_which_exec(char *str, char **args, char **envp, char *pwd)
 		//error
 		return ;
 	}
-	else if (str[0] == '.')
+	else if (ft_strncmp(str, "./", 2) == 0)
 	{
 		ft_exec_relative_path(str, args, envp, pwd);
 	}
@@ -54,37 +54,23 @@ void	ft_exec_true_path(char *str, char **args, char **envp)
 {
 	printf("%s\n", str); 
 	if (execve(str, args, envp) == -1)
-	{
 		printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
-	}
-	else
-	{
-		execve(str, args, envp);
-	}
 }
 
 void	ft_exec_relative_path(char *str, char **args,
 	char **envp, char *pwd)
 {
 	char	*ret;
-	int		i;
+	char	*tmp;
 
+	tmp = ft_strjoin(pwd, "/");
 	str = ft_enlever_str(str);
-	i = 0;
-	while (pwd[i])
-		i++;
-	pwd[i] = '/';
-	pwd[i + 1] = '\0';
-	ret = ft_strjoin(pwd, str);
+	ret = ft_strjoin(tmp, str);
+	free (tmp);
 	if (execve(ret, args, envp) == -1)
 	{
-		printf("ERROR\n");
+		perror(ret);
 		return ;
-	}
-	else
-	{
-		printf("it works\n");
-		execve(ret, args, envp);
 	}
 }
 
@@ -94,7 +80,7 @@ char	*ft_enlever_str(char *str)
 	int		i;
 
 	i = 0;
-	ret = malloc(ft_strlen(str) - 2);
+	ret = malloc(ft_strlen(str) - 1);
 	while (str[i + 2])
 	{
 		ret[i] = str[i + 2];
@@ -109,18 +95,27 @@ char	**ft_envp(t_env *first_env)
 	char	**ret;
 	int		i;
 	t_env	*parseur;
+	char	*tmp;
 
-	ret = malloc(sizeof(char *));
 	i = 0;
 	parseur = first_env;
 	while (parseur)
 	{
-		ret[i] = ft_strjoin(parseur->name, "=");
-		ret[i] = ft_strjoin(ret[i], parseur->value);
 		i++;
 		parseur = parseur->next;
 	}
+	ret = malloc(sizeof(char *) * i);
+	i = 0;
+	parseur = first_env;
+	while (parseur)
+	{
+		tmp = ft_strjoin(parseur->name, "=");
+		ret[i] = ft_strjoin(tmp, parseur->value);
+		free (tmp);
+		i++;
+		parseur = parseur->next;
+	}
+	ret[i] = NULL;
 	i--;
-	ret[i][ft_strlen(ret[i])] = '\0';
 	return (ret);
 }
