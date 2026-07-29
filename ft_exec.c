@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 10:09:28 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 17:02:44 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 17:28:34 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	ft_exec_true_path(char *str, char **args, char **envp)
 	{
 		if (execve(str, args, envp) == -1)
 			printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
+		exit(EXIT_FAILURE);
 	}
 	if (pid > 0)
 	{
@@ -84,8 +85,7 @@ void	ft_exec_relative_path(char *str, char **args,
 		free (tmp);
 		if (execve(ret, args, envp) == -1)
 		{
-			perror(ret);
-			return ;
+			exit(EXIT_FAILURE);
 		}
 	}
 	if (pid > 0)
