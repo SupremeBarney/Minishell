@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/25 18:37:40 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/29 18:23:14 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // pour tout les fonctions il faudra rajouter un moyen d'avoir tout les variable d'environement
 
-void	ft_cd(char *str, t_env *first_env)
+void	ft_cd(char *str, t_env *first_env, char **args)
 {
 	t_env	*pwd;
 	t_env	*home;
@@ -22,6 +22,11 @@ void	ft_cd(char *str, t_env *first_env)
 
 	if (!first_env)
 		ft_which_cd(str, NULL, NULL);
+	if (args[2])
+	{
+		printf ("bash: cd: too many arguments\n");
+		return ;
+	}
 	parseur = first_env;
 	pwd = NULL;
 	home = NULL;
