@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 18:43:39 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 18:56:26 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,11 +163,11 @@ void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);
 void			ft_env(t_env *first_env);
 void			ft_cd(char *str, t_env *first_env, char **args);
-void			ft_which_cd(char *str, t_env *pwd, t_env *home, t_env *old_pwd);
+void			ft_which_cd(char *str, t_env *pwd, t_env *home);
 void			ft_cd_curdir(t_env *pwd);
-void			ft_cd_backtrack(char *str, t_env *pwd, t_env *home, t_env *old_pwd);
-void			ft_cd_true_path(char *str, t_env *pwd, t_env *old_pwd);
-void			ft_cd_relative_path(char *str, t_env *pwd, t_env *old_pwd);
-void			ft_cd_with_nothing(t_env *home, t_env *pwd, t_env *old_pwd);
+void			ft_cd_backtrack(char *str, t_env *pwd, t_env *home);
+void			ft_cd_true_path(char *str, t_env *pwd);
+void			ft_cd_relative_path(char *str, t_env *pwd);
+void			ft_cd_with_nothing(t_env *home, t_env *pwd);
 
 #endif
