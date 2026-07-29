@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 17:28:51 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 17:46:20 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ void	command_control(t_cmd *com_to_exec,
 		return (ft_pwd(shell->env));
 	else if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
 		return (ft_unset(&shell->env, com_to_exec->args[1]));
-	else if (ft_is_execute(com_to_exec->args[0], shell->env, com_to_exec->args, 0) == 2)
-		return ;
-	else if (ft_is_execute(com_to_exec->args[0], shell->env, com_to_exec->args, 1) == 1)
+	else if (ft_is_execute(com_to_exec->args[0], shell->env) == 2)
+		return (ft_path_exec(com_to_exec->args[0], shell->env, com_to_exec->args, 0));
+	else if (ft_is_execute(com_to_exec->args[0], shell->env) == 1)
 		return (ft_exec(com_to_exec->args[0], com_to_exec->args, shell->env));
 	else
 	{
@@ -52,8 +52,39 @@ void	command_control(t_cmd *com_to_exec,
 	}
 }
 
-int	ft_is_execute(char *str, t_env *first_env, char **args, int i)
+int	ft_is_execute(char *str, t_env *first_env)
 {
+	t_env	*parseur;
+	char	**path;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	parseur = first_env;
+	while (parseur)
+	{
+		if (ft_strncmp(parseur->name, "PATH", 5) == 0)
+		{
+			path = ft_split (parseur->value, ':');
+			while (path[i])
+			{
+				tmp = ft_strjoin(path[i], "/");
+				path[i] = ft_strjoin(tmp, str);
+				if (access(path[i], X_OK) == 0)
+					return (2);
+				i++;
+			}
+		}
+		parseur = parseur->next;
+	}
+	if ((str[0] == '.' && str[1] == '/') || (str[0] == '/')) 
+		return (1);
+	return (0);
+}
+
+
+void	ft_path_exec(char *str, t_env *first_env, char **args, int i)
+{	
 	t_env	*parseur;
 	char	**path;
 	char	**envp;
@@ -76,9 +107,7 @@ int	ft_is_execute(char *str, t_env *first_env, char **args, int i)
 					tmp = ft_strjoin(path[i], "/");
 					path[i] = ft_strjoin(tmp, str);
 					if (execve(path[i], args, envp) != -1)
-					{
     					exit(EXIT_FAILURE);
-					}
 					i++;
 				}
 			}
@@ -89,7 +118,4 @@ int	ft_is_execute(char *str, t_env *first_env, char **args, int i)
 		waitpid(pid, NULL, 0);
 	if (pid < 0)
 		perror("error");	
-	if ((str[0] == '.' && str[1] == '/') || (str[0] == '/')) 
-		return (1);
-	return (0);
 }
