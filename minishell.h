@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/28 18:19:19 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/29 16:47:34 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void			ft_exec_relative_path(char *str, char **args,
 					char **envp, char *pwd);
 char			*ft_enlever_str(char *str);
 char			*ft_rajouter_str(char *str);
-int				ft_is_execute(char *str);
+int				ft_is_execute(char *str, t_env *first_env, char **args, int i);
 char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
 void			ft_exit(int exit_status, t_token *tokens,
