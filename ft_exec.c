@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 10:09:28 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 15:57:14 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/29 17:02:44 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,20 @@ void	ft_which_exec(char *str, char **args, char **envp, char *pwd)
 
 void	ft_exec_true_path(char *str, char **args, char **envp)
 {
-	printf("%s\n", str); 
-	if (execve(str, args, envp) == -1)
-		printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		if (execve(str, args, envp) == -1)
+			printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
+	}
+	if (pid > 0)
+	{
+		waitpid(pid, NULL, 0);
+	}
+	if (pid < 0)
+		perror("Eror");
 }
 
 void	ft_exec_relative_path(char *str, char **args,
@@ -62,16 +73,25 @@ void	ft_exec_relative_path(char *str, char **args,
 {
 	char	*ret;
 	char	*tmp;
+	pid_t	pid;
 
-	tmp = ft_strjoin(pwd, "/");
-	str = ft_enlever_str(str);
-	ret = ft_strjoin(tmp, str);
-	free (tmp);
-	if (execve(ret, args, envp) == -1)
+	pid = fork();
+	if (pid == 0)
 	{
-		perror(ret);
-		return ;
+		tmp = ft_strjoin(pwd, "/");
+		str = ft_enlever_str(str);
+		ret = ft_strjoin(tmp, str);
+		free (tmp);
+		if (execve(ret, args, envp) == -1)
+		{
+			perror(ret);
+			return ;
+		}
 	}
+	if (pid > 0)
+		waitpid(pid, NULL, 0);
+	if (pid < 0)
+		perror("EROROR");
 }
 
 char	*ft_enlever_str(char *str)
