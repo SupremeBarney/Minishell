@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/07/26 15:23:09 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/30 15:56:52 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ int	process_line(char *read_line, t_shell *shell)
 		return (free_tokens(tokens), 0);
 	if (add_cmd_node(*shell, &cmd, tokens) == 1)
 		return (free_tokens(tokens), 0);
-	command_control(cmd, shell, tokens);
+	if (nb_cmds(cmd) > 1)
+		execute_pipeline(cmd, shell, tokens);
+	else
+		command_control(cmd, shell, tokens);
 	free_tokens(tokens);
 	free_cmd(cmd);
 	return (0);

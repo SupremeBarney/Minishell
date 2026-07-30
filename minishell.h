@@ -36,6 +36,12 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+typedef struct s_pipe
+{
+	int	prev_fd;
+	int	fd[2];
+}	t_pipe;
+
 typedef enum e_token_type
 {
 	WORD,
@@ -132,6 +138,15 @@ void			free_env(t_shell *shell);
 void			main_loop(char **envp);
 void			command_control(t_cmd *com_to_exec,
 					t_shell *shell, t_token *tokens);
+int				apply_redirections(t_cmd *cmd);
+void			dispatch_command(t_cmd *com_to_exec,
+					t_shell *shell, t_token *tokens);
+int				nb_cmds(t_cmd *cmd);
+void			execute_pipeline(t_cmd *cmd, t_shell *shell, t_token *tokens);
+void			pipeline_child(t_cmd *cur, t_shell *shell,
+					t_token *tokens, t_pipe *pfd);
+void			pipeline_parent(t_cmd *cur, t_pipe *pfd);
+void			wait_pipeline(pid_t last_pid, t_shell *shell);
 char			*get_env_value(t_env *env, char *name);
 void			set_env(t_env **var, char **envp);
 t_env			*new_env_node(char *envp_entry);
