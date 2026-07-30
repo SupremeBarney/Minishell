@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 21:09:04 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/30 19:30:12 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,15 @@ void	dispatch_command(t_cmd *com_to_exec,
 	else if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
 		return (ft_unset(&shell->env, com_to_exec->args[1]));
 	else if (ft_is_execute(com_to_exec->args[0], shell->env) == 2)
-		return (ft_path_exec(com_to_exec->args[0], shell->env, com_to_exec->args, 0));
+		return (ft_path_exec(com_to_exec->args[0], shell, com_to_exec->args, 0));
 	else if (ft_is_execute(com_to_exec->args[0], shell->env) == 1)
-		return (ft_exec(com_to_exec->args[0], com_to_exec->args, shell->env));
+		return (ft_exec(com_to_exec->args[0], com_to_exec->args, shell));
 	else
 	{
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(com_to_exec->args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
+		shell->exit_status = 127;
 	}
 }
 
@@ -133,25 +134,25 @@ int	ft_is_execute(char *str, t_env *first_env)
 	return (0);
 }
 
-
-void	ft_path_exec(char *str, t_env *first_env, char **args, int i)
-{	
+void	ft_path_exec(char *str, t_shell *shell, char **args, int i)
+{
 	t_env	*parseur;
 	char	**path;
 	char	**envp;
 	char	*tmp;
 	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid == 0 && i == 0)
 	{
-		parseur = first_env;
+		parseur = shell->env;
 		i = 0;
 		while (parseur)
 		{
 			if (ft_strncmp(parseur->name, "PATH", 5) == 0)
 			{
-				envp = ft_envp(first_env);
+				envp = ft_envp(shell->env);
 				path = ft_split (parseur->value, ':');
 				while (path[i])
 				{
@@ -164,9 +165,13 @@ void	ft_path_exec(char *str, t_env *first_env, char **args, int i)
 			}
 			parseur = parseur->next;
 		}
+		exit(127);
 	}
 	if (pid > 0)
-		waitpid(pid, NULL, 0);
+	{
+		waitpid(pid, &status, 0);
+		shell->exit_status = wait_status_to_code(status);
+	}
 	if (pid < 0)
-		perror("error");	
+		perror("error");
 }

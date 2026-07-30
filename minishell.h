@@ -75,6 +75,13 @@ typedef struct s_shell
 	char	*read_line;
 }	t_shell;
 
+typedef struct s_exec_info
+{
+	char	**envp;
+	char	*pwd;
+	t_shell	*shell;
+}	t_exec_info;
+
 typedef struct s_parse
 {
 	int	i;
@@ -154,18 +161,17 @@ void			free_chars(char **tab);
 char			**first_equal(char *str);
 void			ft_echo_n(char **args);
 void			ft_echo(char **args);
-void			ft_exec(char *str, char **args, t_env *first_env);
-void			ft_which_exec(char *str, char **args,
-					char **envp, char *pwd);
-void			ft_exec_true_path(char *str, char **args, char **envp);
-void			ft_exec_relative_path(char *str, char **args,
-					char **envp, char *pwd);
+void			ft_exec(char *str, char **args, t_shell *shell);
+void			ft_which_exec(char *str, char **args, t_exec_info *info);
+void			ft_exec_true_path(char *str, char **args, t_exec_info *info);
+void			ft_exec_relative_path(char *str, char **args, t_exec_info *info);
 char			*ft_enlever_str(char *str);
 char			*ft_rajouter_str(char *str);
 int				ft_is_execute(char *str, t_env *first_env);
-void			ft_path_exec(char *str, t_env *first_env, char **args, int i);
+void			ft_path_exec(char *str, t_shell *shell, char **args, int i);
 char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
+int				wait_status_to_code(int status);
 void			ft_exit(int exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
 void			ft_export(t_env **env, char **name);

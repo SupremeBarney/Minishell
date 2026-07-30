@@ -12,27 +12,27 @@
 
 #include "minishell.h"
 
-void	ft_exec(char *str, char **args, t_env *first_env)
+void	ft_exec(char *str, char **args, t_shell *shell)
 {
-	char	*pwd;
-	char	**envp;
-	t_env	*parseur;
+	t_exec_info	info;
+	t_env		*parseur;
 
-	if (!first_env)
+	if (!shell->env)
 		return ;
-	parseur = first_env;
-	pwd = NULL;
+	parseur = shell->env;
+	info.pwd = NULL;
 	while (parseur)
 	{
 		if (ft_strncmp("PWD", parseur->name, 4) == 0)
-			pwd = ft_strdup(parseur->value);
+			info.pwd = ft_strdup(parseur->value);
 		parseur = parseur->next;
 	}
-	envp = ft_envp(first_env);
-	ft_which_exec(str, args, envp, pwd);
+	info.envp = ft_envp(shell->env);
+	info.shell = shell;
+	ft_which_exec(str, args, &info);
 }
 
-void	ft_which_exec(char *str, char **args, char **envp, char *pwd)
+void	ft_which_exec(char *str, char **args, t_exec_info *info)
 {
 	if (!str)
 	{
@@ -41,55 +41,60 @@ void	ft_which_exec(char *str, char **args, char **envp, char *pwd)
 	}
 	else if (ft_strncmp(str, "./", 2) == 0)
 	{
-		ft_exec_relative_path(str, args, envp, pwd);
+		ft_exec_relative_path(str, args, info);
 	}
 	else if (str[0] == '/')
 	{
-		ft_exec_true_path(str, args, envp);
+		ft_exec_true_path(str, args, info);
 		return ;
 	}
 }
 
-void	ft_exec_true_path(char *str, char **args, char **envp)
+void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 {
 	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(str, args, envp) == -1)
+		if (execve(str, args, info->envp) == -1)
 			printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
 		exit(EXIT_FAILURE);
 	}
 	if (pid > 0)
 	{
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &status, 0);
+		info->shell->exit_status = wait_status_to_code(status);
 	}
 	if (pid < 0)
 		perror("Eror");
 }
 
-void	ft_exec_relative_path(char *str, char **args,
-	char **envp, char *pwd)
+void	ft_exec_relative_path(char *str, char **args, t_exec_info *info)
 {
 	char	*ret;
 	char	*tmp;
 	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		tmp = ft_strjoin(pwd, "/");
+		tmp = ft_strjoin(info->pwd, "/");
 		str = ft_enlever_str(str);
 		ret = ft_strjoin(tmp, str);
 		free (tmp);
-		if (execve(ret, args, envp) == -1)
+		if (execve(ret, args, info->envp) == -1)
 		{
 			exit(EXIT_FAILURE);
 		}
 	}
 	if (pid > 0)
-		waitpid(pid, NULL, 0);
+	{
+		waitpid(pid, &status, 0);
+		info->shell->exit_status = wait_status_to_code(status);
+	}
 	if (pid < 0)
 		perror("EROROR");
 }
