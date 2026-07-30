@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/30 19:30:12 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/30 20:00:00 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int	apply_redirections(t_cmd *cmd)
 			return (perror(cmd->input), -1);
 		(dup2(fd, STDIN_FILENO), close(fd));
 	}
+	if (apply_heredoc(cmd) == -1)
+		return (-1);
 	if (cmd->output)
 	{
 		fd = open(cmd->output, O_CREAT | O_WRONLY | O_TRUNC, 0666);

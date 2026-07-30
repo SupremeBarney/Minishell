@@ -6,7 +6,7 @@
 /*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/06/11 00:00:00 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/30 20:04:29 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,19 @@ char	*read_heredoc(char *delimiter, t_shell shell)
 		free(tmp);
 	}
 	return (res);
+}
+
+int	apply_heredoc(t_cmd *cmd)
+{
+	int	pipe_fd[2];
+
+	if (!cmd->heredoc)
+		return (0);
+	if (pipe(pipe_fd) == -1)
+		return (-1);
+	write(pipe_fd[1], cmd->heredoc, ft_strlen(cmd->heredoc));
+	close(pipe_fd[1]);
+	dup2(pipe_fd[0], STDIN_FILENO);
+	close(pipe_fd[0]);
+	return (0);
 }
