@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:16:10 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 21:15:48 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/07/31 17:03:24 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	ft_count_words(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		while (str[i] && str[i] == ' ')
+			i++;
+		while (str[i] && str[i] != ' ')
+		{
+			write(1, &str[i], 1);
+			i++;
+		}
+		while (str[i] && str[i] == ' ')
+			i++;
+		if (str[i])
+			write(1, " ", 1);
+	}
+}
 
 static int		ft_check_if_n(char *str)
 {
@@ -64,7 +85,6 @@ void	ft_echo_n(char **args)
 void	ft_echo(char **args)
 {
 	int	i;
-	int	j;
 
 	if (args[1] && ft_check_if_n(args[1]) == 1)
 	{
@@ -79,15 +99,7 @@ void	ft_echo(char **args)
 	i = 1;
 	while (args[i])
 	{
-		j = 0;
-		while (args[i][j])
-		{
-			if (args[i][j] != '\\')
-				write (1, &args[i][j], 1);
-			j++;
-		}
-		if (args[i + 1])
-			write(1, " ", 1);
+		ft_count_words(args[i]);
 		i++;
 	}
 	write(1, "\n", 1);

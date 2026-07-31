@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 19:00:59 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/31 17:14:57 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,26 +110,22 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home)
 		if (pwd->value[i] == '/')
 			s++;
 		if (s > 0 && s == slash)
-		{
-			while (pwd->value[i])
-			{
 				pwd->value[i] = '\0';
-				i++;
-			}
-		}
 		i++;
 	}
 	chdir(pwd->value);
 	i = 3;
 	if (str[2] && str[2] == '/')
 	{
-		rep = malloc(ft_strlen(str) - 3);
+		rep = malloc(ft_strlen(str) - 2);
 		while (str[i])
 		{
 			rep[i - 3] = str[i];
 			i++;
 		}
+		rep[i - 3] = '\0';
 		str = ft_strdup(rep);
+		free(rep);
 		ft_which_cd(str, pwd, home);
 	}
 }
