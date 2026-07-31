@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:26:13 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/31 15:30:30 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/07/31 15:34:59 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	ft_exit(int exit_status, t_token *tokens, t_cmd *cmd, t_shell shell)
 	args_num = ft_check_num_args(cmd->args);
 	if (ft_is_exitable_char_check(cmd->args[1]) == 0)
 	{
-		printf("bash: exit: \"%s\": numeric argument required\n", cmd->args[1]);
+		printf("bash: exit: %s: numeric argument required\n", cmd->args[1]);
 		return ;
 	}
 	if (args_num > 2)
