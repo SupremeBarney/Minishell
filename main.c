@@ -49,6 +49,50 @@ int	ampersand_parser(char *read_line)
 	return (0);
 }
 
+int	quote_state(char *str)
+{
+	int	i;
+	int	quote_flag;
+
+	i = 0;
+	quote_flag = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && quote_flag != 2)
+			quote_flag = 1 - quote_flag;
+		else if (str[i] == '"' && quote_flag != 1)
+			quote_flag = 2 - quote_flag;
+		i++;
+	}
+	return (quote_flag);
+}
+
+char	*complete_quotes(char *read_line)
+{
+	char	*tmp;
+	int		state;
+
+	state = quote_state(read_line);
+	while (state != 0)
+	{
+		tmp = readline("> ");
+		if (!tmp)
+		{
+			if (state == 1)
+				ft_putstr_fd("bash: unexpected EOF while looking for matching `''\n", 2);
+			else
+				ft_putstr_fd("bash: unexpected EOF while looking for matching `\"'\n", 2);
+			free(read_line);
+			return (NULL);
+		}
+		read_line = strjoin_free(read_line, "\n");
+		read_line = strjoin_free(read_line, tmp);
+		free(tmp);
+		state = quote_state(read_line);
+	}
+	return (read_line);
+}
+
 int	process_line(char *read_line, t_shell *shell)
 {
 	t_token	*tokens;
@@ -92,6 +136,8 @@ void	main_loop(char **envp)
 		if (!read_line)
 			(free_env(&shell), exit(shell.exit_status));
 		if (read_line[0])
+			read_line = complete_quotes(read_line);
+		if (read_line && read_line[0])
 			process_line(read_line, &shell);
 		free(read_line);
 	}

@@ -100,6 +100,8 @@ void	ft_echo(char **args)
 	while (args[i])
 	{
 		ft_count_words(args[i]);
+		if (args[i + 1])
+			write(1, " ", 1);
 		i++;
 	}
 	write(1, "\n", 1);
