@@ -14,14 +14,6 @@
 
 volatile sig_atomic_t	g_signal;
 
-void	handle_sigint_heredoc(int sig)
-{
-	g_signal = sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_done = 1;
-}
-
 void	handle_sigint(int sig)
 {
 	g_signal = sig;
@@ -44,14 +36,4 @@ void	setup_signals(void)
 	sb.sa_handler = SIG_IGN;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sb, NULL);
-}
-
-void	setup_heredoc_signal(void)
-{
-	struct sigaction	sa;
-
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sa.sa_handler = handle_sigint_heredoc;
-	sigaction(SIGINT, &sa, NULL);
 }

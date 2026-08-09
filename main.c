@@ -67,30 +67,57 @@ int	quote_state(char *str)
 	return (quote_flag);
 }
 
-char	*complete_quotes(char *read_line)
+void	quotes_child(int *pipe_fd, char *read_line)
 {
 	char	*tmp;
 	int		state;
 
+	signal(SIGINT, SIG_DFL);
+	close(pipe_fd[0]);
 	state = quote_state(read_line);
 	while (state != 0)
 	{
 		tmp = readline("> ");
+		if (!tmp && state == 1)
+			ft_putstr_fd("bash: unexpected EOF while looking for matching `''\n", 2);
+		if (!tmp && state == 2)
+			ft_putstr_fd("bash: unexpected EOF while looking for matching `\"'\n", 2);
 		if (!tmp)
-		{
-			if (state == 1)
-				ft_putstr_fd("bash: unexpected EOF while looking for matching `''\n", 2);
-			else
-				ft_putstr_fd("bash: unexpected EOF while looking for matching `\"'\n", 2);
-			free(read_line);
-			return (NULL);
-		}
+			exit(1);
 		read_line = strjoin_free(read_line, "\n");
 		read_line = strjoin_free(read_line, tmp);
 		free(tmp);
 		state = quote_state(read_line);
 	}
-	return (read_line);
+	write(pipe_fd[1], read_line, ft_strlen(read_line));
+	close(pipe_fd[1]);
+	exit(0);
+}
+
+char	*complete_quotes(char *read_line)
+{
+	int		pipe_fd[2];
+	pid_t	pid;
+	int		status;
+	char	*res;
+
+	if (quote_state(read_line) == 0)
+		return (read_line);
+	if (pipe(pipe_fd) == -1)
+		return (read_line);
+	pid = fork();
+	if (pid == 0)
+		quotes_child(pipe_fd, read_line);
+	signal(SIGINT, SIG_IGN);
+	close(pipe_fd[1]);
+	res = read_pipe_all(pipe_fd[0]);
+	close(pipe_fd[0]);
+	waitpid(pid, &status, 0);
+	setup_signals();
+	free(read_line);
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+		return (free(res), NULL);
+	return (res);
 }
 
 int	process_line(char *read_line, t_shell *shell)

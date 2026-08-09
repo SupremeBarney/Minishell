@@ -21,10 +21,8 @@ void	redir_in_token(t_token **cur_token, t_cmd *cur_cmd)
 int	heredoc_token(t_cmd **cmd, t_token **cur_token,
 		t_cmd *cur_cmd, t_shell shell)
 {
-	setup_heredoc_signal();
 	(*cur_token) = (*cur_token)->next;
 	cur_cmd->heredoc = read_heredoc((*cur_token)->token, shell);
-	setup_signals();
 	if (!cur_cmd->heredoc)
 	{
 		free_cmd(*cmd);

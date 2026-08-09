@@ -78,6 +78,6 @@ int	add_cmd_node(t_shell shell, t_cmd **cmd, t_token *tokens)
 	if (!cur_cmd->args)
 		return (0);
 	if (!while_add_cmd(shell, cur_token, cur_cmd, cmd))
-		return (0);
+		return (1);
 	return (0);
 }
