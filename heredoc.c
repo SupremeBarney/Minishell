@@ -69,13 +69,13 @@ void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell)
 		tmp = readline("> ");
 		if (!tmp)
 			break ;
-		expanse = heredoc_expansion(tmp, shell);
-		free(tmp);
-		if (!ft_strncmp(delimiter, expanse, ft_strlen(delimiter) + 1))
+		if (!ft_strncmp(delimiter, tmp, ft_strlen(delimiter) + 1))
 		{
-			free(expanse);
+			free(tmp);
 			break ;
 		}
+		expanse = heredoc_expansion(tmp, shell);
+		free(tmp);
 		write(pipe_fd[1], expanse, ft_strlen(expanse));
 		write(pipe_fd[1], "\n", 1);
 		free(expanse);
