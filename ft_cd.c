@@ -29,6 +29,30 @@ static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 	}
 }
 
+static void	ft_cd_previous(t_env *pwd, t_env *old_pwd, int *exit_status)
+{
+	char	*tmp;
+
+	if (!old_pwd || !old_pwd->value)
+	{
+		ft_putstr_fd("bash: cd: OLDPWD not set\n", 2);
+		*exit_status = 1;
+		return ;
+	}
+	if (chdir(old_pwd->value) == -1)
+	{
+		printf("bash: cd: %s: No such file or directory\n", old_pwd->value);
+		*exit_status = 1;
+		return ;
+	}
+	tmp = pwd->value;
+	pwd->value = ft_strdup(old_pwd->value);
+	free(old_pwd->value);
+	old_pwd->value = tmp;
+	printf("%s\n", pwd->value);
+	*exit_status = 0;
+}
+
 void	ft_cd(char *str, t_env *first_env, char **args, int *exit_status)
 {
 	t_env	*pwd;
@@ -50,6 +74,11 @@ void	ft_cd(char *str, t_env *first_env, char **args, int *exit_status)
 	home = NULL;
 	old_pwd = NULL;
 	ft_cd_find_vars(first_env, &pwd, &home, &old_pwd);
+	if (str && str[0] == '-' && str[1] == '\0')
+	{
+		ft_cd_previous(pwd, old_pwd, exit_status);
+		return ;
+	}
 	old_pwd->value = ft_strdup(pwd->value);
 	ft_which_cd(str, pwd, home, exit_status);
 }
