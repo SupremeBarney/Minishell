@@ -22,7 +22,8 @@ int	heredoc_token(t_cmd **cmd, t_token **cur_token,
 		t_cmd *cur_cmd, t_shell shell)
 {
 	(*cur_token) = (*cur_token)->next;
-	cur_cmd->heredoc = read_heredoc((*cur_token)->token, shell);
+	cur_cmd->heredoc = read_heredoc((*cur_token)->token, shell,
+			!(*cur_token)->had_quotes);
 	if (!cur_cmd->heredoc)
 	{
 		free_cmd(*cmd);

@@ -57,7 +57,7 @@ char	*read_pipe_all(int fd)
 	return (res);
 }
 
-void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell)
+void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell, int expand)
 {
 	char	*tmp;
 	char	*expanse;
@@ -74,7 +74,10 @@ void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell)
 			free(tmp);
 			break ;
 		}
-		expanse = heredoc_expansion(tmp, shell);
+		if (expand)
+			expanse = heredoc_expansion(tmp, shell);
+		else
+			expanse = ft_strdup(tmp);
 		free(tmp);
 		write(pipe_fd[1], expanse, ft_strlen(expanse));
 		write(pipe_fd[1], "\n", 1);
@@ -84,7 +87,7 @@ void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell)
 	exit(0);
 }
 
-char	*read_heredoc(char *delimiter, t_shell shell)
+char	*read_heredoc(char *delimiter, t_shell shell, int expand)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
@@ -95,7 +98,7 @@ char	*read_heredoc(char *delimiter, t_shell shell)
 		return (NULL);
 	pid = fork();
 	if (pid == 0)
-		heredoc_child(pipe_fd, delimiter, shell);
+		heredoc_child(pipe_fd, delimiter, shell, expand);
 	signal(SIGINT, SIG_IGN);
 	close(pipe_fd[1]);
 	res = read_pipe_all(pipe_fd[0]);

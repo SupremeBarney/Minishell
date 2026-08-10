@@ -94,9 +94,10 @@ extern volatile sig_atomic_t	g_signal;
 void			handle_sigint(int sig);
 void			setup_signals(void);
 char			*strjoin_free(char *s1, char *s2);
-char			*read_heredoc(char *delimiter, t_shell shell);
+char			*read_heredoc(char *delimiter, t_shell shell, int expand);
 char			*read_pipe_all(int fd);
-void			heredoc_child(int *pipe_fd, char *delimiter, t_shell shell);
+void			heredoc_child(int *pipe_fd, char *delimiter, t_shell shell,
+					int expand);
 void			quotes_child(int *pipe_fd, char *read_line);
 int				apply_heredoc(t_cmd *cmd);
 int				nb_of_tokens(t_token *token);
