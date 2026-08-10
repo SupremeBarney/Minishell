@@ -14,13 +14,27 @@
 
 int	slash_parser(char *read_line)
 {
-	if (read_line[0] == '/')
+	struct stat	st;
+	char		*cmd;
+	int			len;
+
+	if (read_line[0] != '/')
+		return (0);
+	len = 0;
+	while (read_line[len] && read_line[len] != ' ')
+		len++;
+	cmd = ft_substr(read_line, 0, len);
+	if (!cmd)
+		return (0);
+	if (stat(cmd, &st) == 0 && S_ISDIR(st.st_mode))
 	{
 		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(read_line, 2);
-		ft_putstr_fd("\": Is a directory\n", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
+		free(cmd);
 		return (1);
 	}
+	free(cmd);
 	return (0);
 }
 

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	apply_redirections(t_cmd *cmd)
+int	apply_input(t_cmd *cmd)
 {
 	int	fd;
 
@@ -25,6 +25,13 @@ int	apply_redirections(t_cmd *cmd)
 	}
 	if (apply_heredoc(cmd) == -1)
 		return (-1);
+	return (0);
+}
+
+int	apply_output(t_cmd *cmd)
+{
+	int	fd;
+
 	if (cmd->output)
 	{
 		fd = open(cmd->output, O_CREAT | O_WRONLY | O_TRUNC, 0666);
@@ -40,6 +47,19 @@ int	apply_redirections(t_cmd *cmd)
 		(dup2(fd, STDOUT_FILENO), close(fd));
 	}
 	return (0);
+}
+
+int	apply_redirections(t_cmd *cmd)
+{
+	if (cmd->output_rank && cmd->output_rank < cmd->input_rank)
+	{
+		if (apply_output(cmd) == -1)
+			return (-1);
+		return (apply_input(cmd));
+	}
+	if (apply_input(cmd) == -1)
+		return (-1);
+	return (apply_output(cmd));
 }
 
 void	dispatch_command(t_cmd *com_to_exec,

@@ -20,6 +20,8 @@
 # include "libftprintf/ft_printf.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
+# include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -33,6 +35,8 @@ typedef struct s_cmd
 	char			*output;
 	char			*heredoc;
 	char			*output_append;
+	int				input_rank;
+	int				output_rank;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -103,13 +107,14 @@ int				apply_heredoc(t_cmd *cmd);
 int				nb_of_tokens(t_token *token);
 void			init_cmd(t_cmd *cmd);
 int				pipe_token(t_cmd **cur_cmd, t_token **cur_token, int *i);
-void			redir_in_token(t_token **cur_token, t_cmd *cur_cmd);
+void			redir_in_token(t_token **cur_token, t_cmd *cur_cmd, int rank);
 int				heredoc_token(t_cmd **cmd, t_token **cur_token,
-					t_cmd *cur_cmd, t_shell shell);
-void			redir_out_token(t_token **cur_token, t_cmd *cur_cmd);
-void			redir_out_append(t_token **cur_token, t_cmd *cur_cmd);
+					t_cmd *cur_cmd, t_shell shell, int rank);
+void			redir_out_token(t_token **cur_token, t_cmd *cur_cmd, int rank);
+void			redir_out_append(t_token **cur_token, t_cmd *cur_cmd,
+					int rank);
 int				handle_redir(t_cmd **cmd, t_token **cur_token,
-					t_cmd *cur_cmd, t_shell shell);
+					t_cmd *cur_cmd, t_shell shell, int *rank);
 int				while_add_cmd(t_shell shell, t_token *cur_token,
 					t_cmd *cur_cmd, t_cmd **cmd);
 int				add_cmd_node(t_shell shell, t_cmd **cmd, t_token *tokens);
@@ -149,6 +154,8 @@ void			main_loop(char **envp);
 void			command_control(t_cmd *com_to_exec,
 					t_shell *shell, t_token *tokens);
 int				apply_redirections(t_cmd *cmd);
+int				apply_input(t_cmd *cmd);
+int				apply_output(t_cmd *cmd);
 void			dispatch_command(t_cmd *com_to_exec,
 					t_shell *shell, t_token *tokens);
 int				nb_cmds(t_cmd *cmd);

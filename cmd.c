@@ -19,6 +19,8 @@ void	init_cmd(t_cmd *cmd)
 	cmd->output = NULL;
 	cmd->heredoc = NULL;
 	cmd->output_append = NULL;
+	cmd->input_rank = 0;
+	cmd->output_rank = 0;
 	cmd->next = NULL;
 }
 
@@ -42,8 +44,10 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 	t_cmd *cur_cmd, t_cmd **cmd)
 {
 	int		i;
+	int		rank;
 
 	i = 0;
+	rank = 0;
 	while (cur_token)
 	{
 		if (cur_token->token_type == WORD && (cur_token->had_quotes
@@ -53,9 +57,10 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 		{
 			if (!pipe_token(&cur_cmd, &cur_token, &i))
 				return (0);
+			rank = 0;
 			continue ;
 		}
-		else if (!handle_redir(cmd, &cur_token, cur_cmd, shell))
+		else if (!handle_redir(cmd, &cur_token, cur_cmd, shell, &rank))
 			return (0);
 		cur_token = cur_token->next;
 	}

@@ -59,8 +59,13 @@ void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 	if (pid == 0)
 	{
 		if (execve(str, args, info->envp) == -1)
-			printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
-		exit(EXIT_FAILURE);
+		{
+			ft_putstr_fd("bash: ", 2);
+			perror(str);
+			if (errno == EACCES)
+				exit(126);
+			exit(127);
+		}
 	}
 	if (pid > 0)
 	{
