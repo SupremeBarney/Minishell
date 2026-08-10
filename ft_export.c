@@ -140,20 +140,40 @@ char	*after_equal(char *a)
 	return (ret);
 }
 
-void	ft_export(t_env **env, char **name)
+static void	ft_export_insert(t_env **env, t_env *new_node, char *first)
 {
 	t_env	*finder;
-	t_env	*new_node;
 	t_env	*before;
+
+	finder = *env;
+	before = NULL;
+	while (finder)
+	{
+		if (ft_strncmp(finder->name, first, ft_strlen(first) + 1) == 0)
+		{
+			finder->value = new_node->value;
+			return ;
+		}
+		before = finder;
+		finder = finder->next;
+	}
+	if (before)
+		before->next = new_node;
+	else
+		*env = new_node;
+}
+
+void	ft_export(t_env **env, char **name)
+{
+	t_env	*new_node;
 	char	*first;
-	int i;
+	int		i;
 
 	i = 1;
-	if (!(*env))
-		return ;
 	if (!name[1])
 	{
-		ft_env(*env);
+		if (*env)
+			ft_env(*env);
 		return ;
 	}
 	while (name[i])
@@ -166,19 +186,7 @@ void	ft_export(t_env **env, char **name)
 			new_node->name = first;
 			new_node->value = ft_strdup(after_equal(name[i]));
 			new_node->next = NULL;
-			finder = *env;
-			while (finder)
-			{
-				if (ft_strncmp(finder->name, first, ft_strlen(first) + 1) == 0)
-				{
-					finder->value = new_node->value;
-					return ;
-				}
-				before = finder;
-				finder = finder->next;
-			}
-			before->next = new_node;
-			new_node = new_node->next;
+			ft_export_insert(env, new_node, first);
 		}
 		i++;
 	}

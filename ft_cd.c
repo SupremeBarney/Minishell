@@ -22,8 +22,11 @@ void	ft_cd(char *str, t_env *first_env, char **args)
 	t_env	*parseur;
 
 	if (!first_env)
+	{
 		ft_which_cd(str, NULL, NULL);
-	if (args[2])
+		return ;
+	}
+	if (args[1] && args[2])
 	{
 		printf ("bash: cd: too many arguments\n");
 		return ;
@@ -174,7 +177,10 @@ void	ft_cd_relative_path(char *str, t_env *pwd)
 void	ft_cd_with_nothing(t_env *home, t_env *pwd)
 {
 	if (!home)
+	{
+		ft_putstr_fd("bash: cd: HOME not set\n", 2);
 		return ;
+	}
 	chdir(home->value);
 	free(pwd->value);
 	pwd->value = ft_strdup(home->value);
