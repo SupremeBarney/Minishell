@@ -122,6 +122,8 @@ char	*after_equal(char *a)
 	j = 0;
 	while (a[i] && a[i] != '=')
 		i++;
+	if (a[i] != '=')
+		return (ft_strdup(""));
 	i++;
 	while (a[i + j])
 		j++;
@@ -180,11 +182,11 @@ void	ft_export(t_env **env, char **name)
 	{
 		if (ft_is_valid_identifier(name[i]) == 1)
 		{
-			first = ft_strdup(before_equal(name[i]));
+			first = before_equal(name[i]);
 			new_node = malloc(sizeof(t_env));
 			new_node->equal = ft_is_there_an_equal_or_not(name[i]);
 			new_node->name = first;
-			new_node->value = ft_strdup(after_equal(name[i]));
+			new_node->value = after_equal(name[i]);
 			new_node->next = NULL;
 			ft_export_insert(env, new_node, first);
 		}

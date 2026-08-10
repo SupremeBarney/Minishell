@@ -169,7 +169,7 @@ void	ft_cd_relative_path(char *str, t_env *pwd)
 
 void	ft_cd_with_nothing(t_env *home, t_env *pwd)
 {
-	if (!home)
+	if (!home || !home->value || !home->value[0])
 	{
 		ft_putstr_fd("bash: cd: HOME not set\n", 2);
 		return ;
