@@ -94,30 +94,23 @@ void	ft_cd_curdir(t_env *pwd)
 
 void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home)
 {
-	int		i;
-	int		slash;
-	int		s;
+	char	*new_pwd;
 	char	*rep;
+	int		i;
 
-	i = 0;
-	slash = 0;
-	s = 0;
-	while (pwd->value[i])
+	new_pwd = ft_strdup(pwd->value);
+	i = ft_strlen(new_pwd) - 1;
+	while (i > 0 && new_pwd[i] != '/')
+		i--;
+	new_pwd[i] = '\0';
+	if (chdir(new_pwd) == -1)
 	{
-		if (pwd->value[i] == '/')
-			slash++;
-		i++;
+		printf("bash: cd: %s: No such file or directory\n", str);
+		free(new_pwd);
+		return ;
 	}
-	i = 0;
-	while (pwd->value[i])
-	{
-		if (pwd->value[i] == '/')
-			s++;
-		if (s > 0 && s == slash)
-				pwd->value[i] = '\0';
-		i++;
-	}
-	chdir(pwd->value);
+	free(pwd->value);
+	pwd->value = new_pwd;
 	i = 3;
 	if (str[2] && str[2] == '/')
 	{
