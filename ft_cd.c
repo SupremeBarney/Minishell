@@ -14,46 +14,51 @@
 
 // pour tout les fonctions il faudra rajouter un moyen d'avoir tout les variable d'environement
 
-void	ft_cd(char *str, t_env *first_env, char **args)
+static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
+		t_env **old_pwd)
+{
+	while (env)
+	{
+		if (ft_strncmp("PWD", env->name, 4) == 0)
+			*pwd = env;
+		if (ft_strncmp("HOME", env->name, 5) == 0)
+			*home = env;
+		if (ft_strncmp("OLDPWD", env->name, 7) == 0)
+			*old_pwd = env;
+		env = env->next;
+	}
+}
+
+void	ft_cd(char *str, t_env *first_env, char **args, int *exit_status)
 {
 	t_env	*pwd;
 	t_env	*home;
 	t_env	*old_pwd;
-	t_env	*parseur;
 
 	if (!first_env)
 	{
-		ft_which_cd(str, NULL, NULL);
+		ft_which_cd(str, NULL, NULL, exit_status);
 		return ;
 	}
 	if (args[1] && args[2])
 	{
 		printf ("bash: cd: too many arguments\n");
+		*exit_status = 1;
 		return ;
 	}
-	parseur = first_env;
 	pwd = NULL;
 	home = NULL;
 	old_pwd = NULL;
-	while (parseur)
-	{
-		if (ft_strncmp("PWD", parseur->name, 4) == 0)
-			pwd = parseur;
-		if (ft_strncmp("HOME", parseur->name, 5) == 0)
-			home = parseur;
-		if (ft_strncmp("OLDPWD", parseur->name, 7) == 0)
-			old_pwd = parseur;
-		parseur = parseur->next;
-	}
+	ft_cd_find_vars(first_env, &pwd, &home, &old_pwd);
 	old_pwd->value = ft_strdup(pwd->value);
-	ft_which_cd(str, pwd, home);
+	ft_which_cd(str, pwd, home, exit_status);
 }
 
-void	ft_which_cd(char *str, t_env *pwd, t_env *home)
+void	ft_which_cd(char *str, t_env *pwd, t_env *home, int *exit_status)
 {
 	if (!str || str[0] == '\n')
 	{
-		ft_cd_with_nothing(home, pwd);
+		ft_cd_with_nothing(home, pwd, exit_status);
 		return ;
 	}
 	else if (str[0] == '.')
@@ -61,41 +66,58 @@ void	ft_which_cd(char *str, t_env *pwd, t_env *home)
 		if (str[1] == '.')
 		{
 			if (str[2] == '\0' || str[2] =='/')
-				ft_cd_backtrack(str, pwd, home);
+				ft_cd_backtrack(str, pwd, home, exit_status);
 		}
 		if (str[1] == '\0')
 		{
-			ft_cd_curdir(pwd);
+			ft_cd_curdir(pwd, exit_status);
 			return ;
 		}
 	}
 	else if (str[0] == '/')
-	{
-		ft_cd_true_path(str, pwd);
-		return ;
-	}
+		ft_cd_true_path(str, pwd, exit_status);
 	else
-	{
-		ft_cd_relative_path(str, pwd);
-	}
+		ft_cd_relative_path(str, pwd, exit_status);
 }
 
-void	ft_cd_curdir(t_env *pwd)
+void	ft_cd_curdir(t_env *pwd, int *exit_status)
 {
 	if (!pwd)
 	{
 		printf("cd: error retrieving current directory: ");
 		printf("getcwd: cannot access parent directories: ");
 		printf("No such file or directory\n");
+		*exit_status = 1;
 		return ;
 	}
-	chdir(pwd->value);
+	if (chdir(pwd->value) == -1)
+		*exit_status = 1;
+	else
+		*exit_status = 0;
 }
 
-void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home)
+static void	ft_cd_backtrack_rest(char *str, t_env *pwd, t_env *home,
+		int *exit_status)
+{
+	char	*rep;
+	int		i;
+
+	i = 3;
+	rep = malloc(ft_strlen(str) - 2);
+	while (str[i])
+	{
+		rep[i - 3] = str[i];
+		i++;
+	}
+	rep[i - 3] = '\0';
+	str = ft_strdup(rep);
+	free(rep);
+	ft_which_cd(str, pwd, home, exit_status);
+}
+
+void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 {
 	char	*new_pwd;
-	char	*rep;
 	int		i;
 
 	new_pwd = ft_strdup(pwd->value);
@@ -107,40 +129,32 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home)
 	{
 		printf("bash: cd: %s: No such file or directory\n", str);
 		free(new_pwd);
+		*exit_status = 1;
 		return ;
 	}
 	free(pwd->value);
 	pwd->value = new_pwd;
-	i = 3;
+	*exit_status = 0;
 	if (str[2] && str[2] == '/')
-	{
-		rep = malloc(ft_strlen(str) - 2);
-		while (str[i])
-		{
-			rep[i - 3] = str[i];
-			i++;
-		}
-		rep[i - 3] = '\0';
-		str = ft_strdup(rep);
-		free(rep);
-		ft_which_cd(str, pwd, home);
-	}
+		ft_cd_backtrack_rest(str, pwd, home, exit_status);
 }
 
-void	ft_cd_true_path(char *str, t_env *pwd)
+void	ft_cd_true_path(char *str, t_env *pwd, int *exit_status)
 {
 	if (chdir(str) == -1)
 	{
 		printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
+		*exit_status = 1;
 	}
 	else
 	{
 		free(pwd->value);
 		pwd->value = ft_strdup(str);
+		*exit_status = 0;
 	}
 }
 
-void	ft_cd_relative_path(char *str, t_env *pwd)
+void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
 {
 	char	*ret;
 	char	*first_half;
@@ -161,20 +175,28 @@ void	ft_cd_relative_path(char *str, t_env *pwd)
 	{
 		printf("bash: cd: %s: No such file or directory\n", str);
 		free(ret);
+		*exit_status = 1;
 		return ;
 	}
 	free(pwd->value);
 	pwd->value = ret;
+	*exit_status = 0;
 }
 
-void	ft_cd_with_nothing(t_env *home, t_env *pwd)
+void	ft_cd_with_nothing(t_env *home, t_env *pwd, int *exit_status)
 {
 	if (!home || !home->value || !home->value[0])
 	{
 		ft_putstr_fd("bash: cd: HOME not set\n", 2);
+		*exit_status = 1;
 		return ;
 	}
-	chdir(home->value);
+	if (chdir(home->value) == -1)
+	{
+		*exit_status = 1;
+		return ;
+	}
 	free(pwd->value);
 	pwd->value = ft_strdup(home->value);
+	*exit_status = 0;
 }

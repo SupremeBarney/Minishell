@@ -69,7 +69,8 @@ void	dispatch_command(t_cmd *com_to_exec,
 		return ;
 	else if (ft_strncmp(com_to_exec->args[0], "cd", 3) == 0)
 	{
-		ft_cd(com_to_exec->args[1], shell->env, com_to_exec->args);
+		ft_cd(com_to_exec->args[1], shell->env, com_to_exec->args,
+			&shell->exit_status);
 		return ;
 	}
 	else if (ft_strncmp(com_to_exec->args[0], "echo", 5) == 0)
