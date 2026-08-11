@@ -184,7 +184,7 @@ t_env			*ft_find_pwd(t_env *env);
 int				wait_status_to_code(int status);
 void			ft_exit(int exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
-void			ft_export(t_env **env, char **name);
+void			ft_export(t_env **env, char **name, int *exit_status);
 void			ft_free_env(t_env *var);
 void			ft_pwd(t_env *pwd, char **args);
 void			ft_unset(t_env **first_env, char *var_to_unset);

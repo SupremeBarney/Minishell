@@ -162,13 +162,26 @@ static void	ft_export_insert(t_env **env, t_env *new_node, char *first)
 		*env = new_node;
 }
 
-void	ft_export(t_env **env, char **name)
+static void	ft_export_add(t_env **env, char *arg)
 {
 	t_env	*new_node;
 	char	*first;
-	int		i;
+
+	first = before_equal(arg);
+	new_node = malloc(sizeof(t_env));
+	new_node->equal = ft_is_there_an_equal_or_not(arg);
+	new_node->name = first;
+	new_node->value = after_equal(arg);
+	new_node->next = NULL;
+	ft_export_insert(env, new_node, first);
+}
+
+void	ft_export(t_env **env, char **name, int *exit_status)
+{
+	int	i;
 
 	i = 1;
+	*exit_status = 0;
 	if (!name[1])
 	{
 		if (*env)
@@ -178,15 +191,9 @@ void	ft_export(t_env **env, char **name)
 	while (name[i])
 	{
 		if (ft_is_valid_identifier(name[i]) == 1)
-		{
-			first = before_equal(name[i]);
-			new_node = malloc(sizeof(t_env));
-			new_node->equal = ft_is_there_an_equal_or_not(name[i]);
-			new_node->name = first;
-			new_node->value = after_equal(name[i]);
-			new_node->next = NULL;
-			ft_export_insert(env, new_node, first);
-		}
+			ft_export_add(env, name[i]);
+		else
+			*exit_status = 1;
 		i++;
 	}
 }

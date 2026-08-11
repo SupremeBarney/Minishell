@@ -86,7 +86,8 @@ void	dispatch_command(t_cmd *com_to_exec,
 	else if (ft_strncmp(com_to_exec->args[0], "exit", 5) == 0)
 		return (ft_exit(shell->exit_status, tokens, com_to_exec, *shell));
 	else if (ft_strncmp(com_to_exec->args[0], "export", 7) == 0)
-		return (ft_export(&shell->env, com_to_exec->args));
+		return (ft_export(&shell->env, com_to_exec->args,
+				&shell->exit_status));
 	else if (ft_strncmp(com_to_exec->args[0], "pwd", 4) == 0)
 		return (ft_pwd(shell->env, com_to_exec->args));
 	else if (ft_strncmp(com_to_exec->args[0], "unset", 6) == 0)
