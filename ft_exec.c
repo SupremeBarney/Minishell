@@ -120,6 +120,19 @@ char	*ft_enlever_str(char *str)
 	return (ret);
 }
 
+static int	ft_env_len(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (env)
+	{
+		i++;
+		env = env->next;
+	}
+	return (i);
+}
+
 char	**ft_envp(t_env *first_env)
 {
 	char	**ret;
@@ -127,25 +140,20 @@ char	**ft_envp(t_env *first_env)
 	t_env	*parseur;
 	char	*tmp;
 
+	ret = malloc(sizeof(char *) * (ft_env_len(first_env) + 1));
 	i = 0;
 	parseur = first_env;
 	while (parseur)
 	{
-		i++;
-		parseur = parseur->next;
-	}
-	ret = malloc(sizeof(char *) * i);
-	i = 0;
-	parseur = first_env;
-	while (parseur)
-	{
-		tmp = ft_strjoin(parseur->name, "=");
-		ret[i] = ft_strjoin(tmp, parseur->value);
-		free (tmp);
-		i++;
+		if (parseur->equal == 1)
+		{
+			tmp = ft_strjoin(parseur->name, "=");
+			ret[i] = ft_strjoin(tmp, parseur->value);
+			free (tmp);
+			i++;
+		}
 		parseur = parseur->next;
 	}
 	ret[i] = NULL;
-	i--;
 	return (ret);
 }

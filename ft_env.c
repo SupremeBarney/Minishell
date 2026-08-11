@@ -22,21 +22,23 @@ void	ft_env(t_env *first_env)
 	parseur = first_env;
 	while (parseur)
 	{
-		i = 0;
-		while (parseur->name[i])
-		{
-			write(1, &parseur->name[i], 1);
-			i++;
-		}
-		i = 0;
 		if (parseur->equal == 1)
-			write(1, "=", 1);
-		while (parseur->value[i])
 		{
-			write(1, &parseur->value[i], 1);
-			i++;
+			i = 0;
+			while (parseur->name[i])
+			{
+				write(1, &parseur->name[i], 1);
+				i++;
+			}
+			write(1, "=", 1);
+			i = 0;
+			while (parseur->value[i])
+			{
+				write(1, &parseur->value[i], 1);
+				i++;
+			}
+			write(1, "\n", 1);
 		}
-		write(1, "\n", 1);
 		parseur = parseur->next;
 	}
 }
