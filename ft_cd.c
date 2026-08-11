@@ -196,7 +196,8 @@ void	ft_cd_true_path(char *str, t_env *pwd, int *exit_status)
 {
 	if (chdir(str) == -1)
 	{
-		printf("cd: %s: No such file or directory\n", str); //faudra que je fasse une fonction pour return la bonne erreur plus tard
+		ft_putstr_fd("bash: cd: ", 2);
+		perror(str);
 		*exit_status = 1;
 	}
 	else
@@ -235,7 +236,8 @@ void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
 	ret = ft_cd_join_path(pwd->value, str);
 	if (chdir(ret) == -1)
 	{
-		printf("bash: cd: %s: No such file or directory\n", str);
+		ft_putstr_fd("bash: cd: ", 2);
+		perror(str);
 		free(ret);
 		*exit_status = 1;
 		return ;
