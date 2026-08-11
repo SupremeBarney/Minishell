@@ -131,11 +131,8 @@ char	*after_equal(char *a)
 	j = 0;
 	while (a[i])
 	{
-		if (a[i] != ' ')
-		{
-			ret[j] = a[i];
-			j++;
-		}
+		ret[j] = a[i];
+		j++;
 		i++;
 	}
 	ret[j] = '\0';

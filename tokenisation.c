@@ -90,7 +90,8 @@ void	tokenise_loop(char *str, t_token **tokens, t_parse *p, t_shell shell)
 			tok_space(str, tokens, p, shell);
 			continue ;
 		}
-		else if (str[p->i] == '|' || str[p->i] == '<' || str[p->i] == '>')
+		else if ((str[p->i] == '|' || str[p->i] == '<' || str[p->i] == '>')
+			&& p->quote_flag == 0)
 		{
 			tok_operator(str, tokens, p, shell);
 			continue ;
