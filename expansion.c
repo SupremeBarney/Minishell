@@ -67,13 +67,6 @@ void	process_char(char *str, int *state, char **res, t_shell shell)
 	tmp[1] = 0;
 	if (handle_quote_flag(str[state[0]], &state[1]))
 		state[0]++;
-	else if (str[state[0]] == '\\' && str[state[0] + 1] == '$'
-		&& state[1] != 1)
-	{
-		tmp[0] = '$';
-		*res = strjoin_free(*res, tmp);
-		state[0] += 2;
-	}
 	else if (str[state[0]] == '$' && state[1] != 1)
 	{
 		tmp_dollar = handle_dollar(str, &state[0], shell, state[1]);
