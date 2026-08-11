@@ -168,6 +168,30 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 		ft_cd_backtrack_rest(str, pwd, home, exit_status);
 }
 
+static char	*ft_squeeze_slashes(char *str)
+{
+	char	*res;
+	int		i;
+	int		j;
+
+	res = malloc(ft_strlen(str) + 1);
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		res[j++] = str[i];
+		if (str[i] == '/')
+			while (str[i] == '/')
+				i++;
+		else
+			i++;
+	}
+	if (j > 1 && res[j - 1] == '/')
+		j--;
+	res[j] = '\0';
+	return (res);
+}
+
 void	ft_cd_true_path(char *str, t_env *pwd, int *exit_status)
 {
 	if (chdir(str) == -1)
@@ -178,28 +202,37 @@ void	ft_cd_true_path(char *str, t_env *pwd, int *exit_status)
 	else
 	{
 		free(pwd->value);
-		pwd->value = ft_strdup(str);
+		pwd->value = ft_squeeze_slashes(str);
 		*exit_status = 0;
 	}
 }
 
-void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
+static char	*ft_cd_join_path(char *pwd_value, char *str)
 {
-	char	*ret;
 	char	*first_half;
+	char	*ret;
 	int		i;
 
 	i = 0;
-	first_half = malloc (ft_strlen(pwd->value) + 2);
-	while (pwd->value[i])
+	first_half = malloc(ft_strlen(pwd_value) + 2);
+	while (pwd_value[i])
 	{
-		first_half[i] = pwd->value[i];
+		first_half[i] = pwd_value[i];
 		i++;
 	}
 	first_half[i] = '/';
 	first_half[i + 1] = '\0';
 	ret = ft_strjoin(first_half, str);
 	free(first_half);
+	return (ret);
+}
+
+void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
+{
+	char	*ret;
+	char	*clean;
+
+	ret = ft_cd_join_path(pwd->value, str);
 	if (chdir(ret) == -1)
 	{
 		printf("bash: cd: %s: No such file or directory\n", str);
@@ -207,8 +240,10 @@ void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
 		*exit_status = 1;
 		return ;
 	}
+	clean = ft_squeeze_slashes(ret);
+	free(ret);
 	free(pwd->value);
-	pwd->value = ret;
+	pwd->value = clean;
 	*exit_status = 0;
 }
 
