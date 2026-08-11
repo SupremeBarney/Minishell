@@ -50,6 +50,27 @@ void	ft_which_exec(char *str, char **args, t_exec_info *info)
 	}
 }
 
+static int	ft_is_dir(char *str)
+{
+	struct stat	st;
+
+	if (stat(str, &st) == 0 && S_ISDIR(st.st_mode))
+		return (1);
+	return (0);
+}
+
+static void	ft_exec_child_error(char *str)
+{
+	int	err;
+
+	err = errno;
+	ft_putstr_fd("bash: ", 2);
+	perror(str);
+	if (err == EACCES)
+		exit(126);
+	exit(127);
+}
+
 void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 {
 	pid_t	pid;
@@ -58,14 +79,15 @@ void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(str, args, info->envp) == -1)
+		if (ft_is_dir(str))
 		{
 			ft_putstr_fd("bash: ", 2);
-			perror(str);
-			if (errno == EACCES)
-				exit(126);
-			exit(127);
+			ft_putstr_fd(str, 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+			exit(126);
 		}
+		if (execve(str, args, info->envp) == -1)
+			ft_exec_child_error(str);
 	}
 	if (pid > 0)
 	{
