@@ -12,27 +12,6 @@
 
 #include "minishell.h"
 
-static void	ft_count_words(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		while (str[i] && str[i] == ' ')
-			i++;
-		while (str[i] && str[i] != ' ')
-		{
-			write(1, &str[i], 1);
-			i++;
-		}
-		while (str[i] && str[i] == ' ')
-			i++;
-		if (str[i])
-			write(1, " ", 1);
-	}
-}
-
 static int		ft_check_if_n(char *str)
 {
 	int	i;
@@ -99,7 +78,7 @@ void	ft_echo(char **args)
 	i = 1;
 	while (args[i])
 	{
-		ft_count_words(args[i]);
+		write(1, args[i], ft_strlen(args[i]));
 		if (args[i + 1])
 			write(1, " ", 1);
 		i++;
