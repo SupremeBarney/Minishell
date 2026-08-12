@@ -57,6 +57,13 @@ char	*read_pipe_all(int fd)
 	return (res);
 }
 
+static char	*heredoc_line(char *tmp, t_shell shell, int expand)
+{
+	if (expand)
+		return (heredoc_expansion(tmp, shell));
+	return (ft_strdup(tmp));
+}
+
 void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell, int expand)
 {
 	char	*tmp;
@@ -74,10 +81,7 @@ void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell, int expand)
 			free(tmp);
 			break ;
 		}
-		if (expand)
-			expanse = heredoc_expansion(tmp, shell);
-		else
-			expanse = ft_strdup(tmp);
+		expanse = heredoc_line(tmp, shell, expand);
 		free(tmp);
 		write(pipe_fd[1], expanse, ft_strlen(expanse));
 		write(pipe_fd[1], "\n", 1);

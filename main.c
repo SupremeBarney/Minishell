@@ -93,9 +93,11 @@ void	quotes_child(int *pipe_fd, char *read_line)
 	{
 		tmp = readline("> ");
 		if (!tmp && state == 1)
-			ft_putstr_fd("bash: unexpected EOF while looking for matching `''\n", 2);
+			ft_putstr_fd("bash: unexpected EOF while looking "
+				"for matching `''\n", 2);
 		if (!tmp && state == 2)
-			ft_putstr_fd("bash: unexpected EOF while looking for matching `\"'\n", 2);
+			ft_putstr_fd("bash: unexpected EOF while looking "
+				"for matching `\"'\n", 2);
 		if (!tmp)
 			exit(1);
 		read_line = strjoin_free(read_line, "\n");

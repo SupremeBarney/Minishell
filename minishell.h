@@ -175,7 +175,8 @@ void			ft_echo(char **args);
 void			ft_exec(char *str, char **args, t_shell *shell);
 void			ft_which_exec(char *str, char **args, t_exec_info *info);
 void			ft_exec_true_path(char *str, char **args, t_exec_info *info);
-void			ft_exec_relative_path(char *str, char **args, t_exec_info *info);
+void			ft_exec_relative_path(char *str, char **args,
+					t_exec_info *info);
 char			*ft_enlever_str(char *str);
 char			*ft_rajouter_str(char *str);
 int				ft_is_execute(char *str, t_env *first_env);
@@ -187,7 +188,7 @@ void			ft_exit(int exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
 void			ft_export(t_env **env, char **name, int *exit_status);
 void			ft_free_env(t_env *var);
-void			ft_pwd(t_env *pwd, char **args);
+void			ft_pwd(t_env *pwd, char **args, int *exit_status);
 void			ft_unset(t_env **first_env, char *var_to_unset);
 void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);

@@ -75,7 +75,7 @@ static int	dispatch_builtin(t_cmd *cmd, t_shell *shell, t_token *tokens)
 	else if (ft_strncmp(cmd->args[0], "export", 7) == 0)
 		ft_export(&shell->env, cmd->args, &shell->exit_status);
 	else if (ft_strncmp(cmd->args[0], "pwd", 4) == 0)
-		(ft_pwd(shell->env, cmd->args), shell->exit_status = 0);
+		ft_pwd(shell->env, cmd->args, &shell->exit_status);
 	else if (ft_strncmp(cmd->args[0], "unset", 6) == 0)
 		(ft_unset(&shell->env, cmd->args[1]), shell->exit_status = 0);
 	else

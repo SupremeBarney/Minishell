@@ -36,8 +36,9 @@ void	display_cmd(t_cmd *cmd)
 		i = 0;
 		while (node->args[i])
 			ft_printf("args : %s\n", node->args[i++]);
-		ft_printf("input : %s\noutput : %s\nheredoc : %s\noutput_append : %s\n\n",
-			node->input, node->output, node->heredoc, node->output_append);
+		ft_printf("input : %s\noutput : %s\n", node->input, node->output);
+		ft_printf("heredoc : %s\noutput_append : %s\n\n",
+			node->heredoc, node->output_append);
 		node = node->next;
 	}
 }
