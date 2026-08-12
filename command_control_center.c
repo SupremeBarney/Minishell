@@ -115,6 +115,7 @@ void	command_control(t_cmd *com_to_exec,
 	saved_stdout = dup(STDOUT_FILENO);
 	if (apply_redirections(com_to_exec) == -1)
 	{
+		shell->exit_status = 1;
 		dup2(saved_stdin, STDIN_FILENO);
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);

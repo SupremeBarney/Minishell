@@ -15,6 +15,7 @@
 void	redir_in_token(t_token **cur_token, t_cmd *cur_cmd, int rank)
 {
 	(*cur_token) = (*cur_token)->next;
+	free(cur_cmd->input);
 	cur_cmd->input = ft_strdup((*cur_token)->token);
 	cur_cmd->input_rank = rank;
 }
@@ -23,6 +24,7 @@ int	heredoc_token(t_cmd **cmd, t_token **cur_token,
 		t_cmd *cur_cmd, t_shell shell, int rank)
 {
 	(*cur_token) = (*cur_token)->next;
+	free(cur_cmd->heredoc);
 	cur_cmd->heredoc = read_heredoc((*cur_token)->token, shell,
 			!(*cur_token)->had_quotes);
 	if (!cur_cmd->heredoc)
@@ -38,6 +40,7 @@ int	heredoc_token(t_cmd **cmd, t_token **cur_token,
 void	redir_out_token(t_token **cur_token, t_cmd *cur_cmd, int rank)
 {
 	(*cur_token) = (*cur_token)->next;
+	free(cur_cmd->output);
 	cur_cmd->output = ft_strdup((*cur_token)->token);
 	cur_cmd->output_rank = rank;
 }
@@ -45,6 +48,7 @@ void	redir_out_token(t_token **cur_token, t_cmd *cur_cmd, int rank)
 void	redir_out_append(t_token **cur_token, t_cmd *cur_cmd, int rank)
 {
 	(*cur_token) = (*cur_token)->next;
+	free(cur_cmd->output_append);
 	cur_cmd->output_append = ft_strdup((*cur_token)->token);
 	cur_cmd->output_rank = rank;
 }
