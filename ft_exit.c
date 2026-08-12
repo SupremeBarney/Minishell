@@ -40,6 +40,20 @@ static	int	ft_is_exitable_char_check(char *str)
 	return (1);
 }
 
+static int	ft_exit_sign(char *str, int *i)
+{
+	int	neg;
+
+	neg = 1;
+	if (str[*i] == '-' || str[*i] == '+')
+	{
+		if (str[*i] == '-')
+			neg = -1;
+		(*i)++;
+	}
+	return (neg);
+}
+
 static long long	ft_exit_atoll(char *str, int *overflow)
 {
 	unsigned long long	res;
@@ -48,15 +62,9 @@ static long long	ft_exit_atoll(char *str, int *overflow)
 	int					i;
 
 	i = 0;
-	neg = 1;
 	res = 0;
 	*overflow = 0;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			neg = -1;
-		i++;
-	}
+	neg = ft_exit_sign(str, &i);
 	limit = 9223372036854775807ULL + (neg == -1);
 	while (str[i])
 	{

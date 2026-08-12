@@ -103,7 +103,7 @@ t_env	*add_env_var(t_env **env, char *name, char *value)
 	if (value)
 		node->value = ft_strdup(value);
 	node->next = NULL;
-	node->equal = 1;
+	node->equal = (value != NULL);
 	if (!*env)
 		return (*env = node, node);
 	tail = *env;

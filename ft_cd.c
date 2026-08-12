@@ -32,7 +32,8 @@ static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 	}
 }
 
-static void	ft_cd_ensure_vars(t_env **first_env, t_env **pwd, t_env **old_pwd)
+static void	ft_cd_ensure_vars(t_env **first_env, t_env **pwd,
+		t_env **old_pwd)
 {
 	char	*cwd;
 
@@ -50,6 +51,7 @@ static void	ft_cd_set_oldpwd(t_env *old_pwd, char *pwd_value)
 {
 	free(old_pwd->value);
 	old_pwd->value = ft_strdup(pwd_value);
+	old_pwd->equal = 1;
 }
 
 static void	ft_cd_previous(t_env *pwd, t_env *old_pwd, int *exit_status)
@@ -99,6 +101,12 @@ void	ft_cd(char *str, t_env **first_env, char **args, int *exit_status)
 	ft_which_cd(str, pwd, home, exit_status);
 }
 
+static int	ft_is_backtrack(char *str)
+{
+	return (str[0] == '.' && str[1] == '.'
+		&& (str[2] == '\0' || str[2] == '/'));
+}
+
 void	ft_which_cd(char *str, t_env *pwd, t_env *home, int *exit_status)
 {
 	if (!str || str[0] == '\n')
@@ -106,19 +114,10 @@ void	ft_which_cd(char *str, t_env *pwd, t_env *home, int *exit_status)
 		ft_cd_with_nothing(home, pwd, exit_status);
 		return ;
 	}
-	else if (str[0] == '.')
-	{
-		if (str[1] == '.')
-		{
-			if (str[2] == '\0' || str[2] =='/')
-				ft_cd_backtrack(str, pwd, home, exit_status);
-		}
-		if (str[1] == '\0')
-		{
-			ft_cd_curdir(pwd, exit_status);
-			return ;
-		}
-	}
+	else if (ft_is_backtrack(str))
+		ft_cd_backtrack(str, pwd, home, exit_status);
+	else if (str[0] == '.' && str[1] == '\0')
+		ft_cd_curdir(pwd, exit_status);
 	else if (str[0] == '/')
 		ft_cd_true_path(str, pwd, exit_status);
 	else
@@ -169,6 +168,8 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 	i = ft_strlen(new_pwd) - 1;
 	while (i > 0 && new_pwd[i] != '/')
 		i--;
+	if (i == 0)
+		new_pwd[i++] = '/';
 	new_pwd[i] = '\0';
 	if (chdir(new_pwd) == -1)
 	{
@@ -258,7 +259,9 @@ void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
 		*exit_status = 1;
 		return ;
 	}
-	clean = ft_squeeze_slashes(ret);
+	clean = getcwd(NULL, 0);
+	if (!clean)
+		clean = ft_squeeze_slashes(ret);
 	free(ret);
 	free(pwd->value);
 	pwd->value = clean;
