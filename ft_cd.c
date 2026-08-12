@@ -32,32 +32,6 @@ static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 	}
 }
 
-static t_env	*ft_cd_new_var(t_env **first_env, char *name, char *value)
-{
-	t_env	*node;
-	t_env	*tail;
-
-	node = malloc(sizeof(t_env));
-	if (!node)
-		return (NULL);
-	node->name = ft_strdup(name);
-	node->value = NULL;
-	if (value)
-		node->value = ft_strdup(value);
-	node->next = NULL;
-	node->equal = 1;
-	if (!*first_env)
-	{
-		*first_env = node;
-		return (node);
-	}
-	tail = *first_env;
-	while (tail->next)
-		tail = tail->next;
-	tail->next = node;
-	return (node);
-}
-
 static void	ft_cd_ensure_vars(t_env **first_env, t_env **pwd, t_env **old_pwd)
 {
 	char	*cwd;
@@ -65,11 +39,11 @@ static void	ft_cd_ensure_vars(t_env **first_env, t_env **pwd, t_env **old_pwd)
 	if (!*pwd)
 	{
 		cwd = getcwd(NULL, 0);
-		*pwd = ft_cd_new_var(first_env, "PWD", cwd);
+		*pwd = add_env_var(first_env, "PWD", cwd);
 		free(cwd);
 	}
 	if (!*old_pwd)
-		*old_pwd = ft_cd_new_var(first_env, "OLDPWD", NULL);
+		*old_pwd = add_env_var(first_env, "OLDPWD", NULL);
 }
 
 static void	ft_cd_set_oldpwd(t_env *old_pwd, char *pwd_value)

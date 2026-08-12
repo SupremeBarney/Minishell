@@ -161,6 +161,16 @@ int	process_line(char *read_line, t_shell *shell)
 	return (0);
 }
 
+static void	init_pwd(t_env **env)
+{
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (cwd && !get_env_value(*env, "PWD"))
+		add_env_var(env, "PWD", cwd);
+	free(cwd);
+}
+
 void	main_loop(char **envp)
 {
 	t_shell	shell;
@@ -168,6 +178,7 @@ void	main_loop(char **envp)
 
 	shell.env = NULL;
 	set_env(&shell.env, envp);
+	init_pwd(&shell.env);
 	shell.exit_status = 0;
 	setup_signals();
 	while (1)

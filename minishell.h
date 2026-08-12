@@ -132,6 +132,7 @@ void			free_chars(char **tab);
 t_env			*new_env_node(char *envp_entry);
 void			set_env(t_env **var, char **envp);
 char			*get_env_value(t_env *env, char *name);
+t_env			*add_env_var(t_env **env, char *name, char *value);
 void			display_env(t_env *var);
 char			*handle_dollar(char *str, int *i, t_shell shell, int flag);
 char			*expansion(char *str, t_shell shell);
