@@ -17,6 +17,9 @@
 static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 		t_env **old_pwd)
 {
+	*pwd = NULL;
+	*home = NULL;
+	*old_pwd = NULL;
 	while (env)
 	{
 		if (ft_strncmp("PWD", env->name, 4) == 0)
@@ -27,6 +30,52 @@ static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 			*old_pwd = env;
 		env = env->next;
 	}
+}
+
+static t_env	*ft_cd_new_var(t_env **first_env, char *name, char *value)
+{
+	t_env	*node;
+	t_env	*tail;
+
+	node = malloc(sizeof(t_env));
+	if (!node)
+		return (NULL);
+	node->name = ft_strdup(name);
+	node->value = NULL;
+	if (value)
+		node->value = ft_strdup(value);
+	node->next = NULL;
+	node->equal = 1;
+	if (!*first_env)
+	{
+		*first_env = node;
+		return (node);
+	}
+	tail = *first_env;
+	while (tail->next)
+		tail = tail->next;
+	tail->next = node;
+	return (node);
+}
+
+static void	ft_cd_ensure_vars(t_env **first_env, t_env **pwd, t_env **old_pwd)
+{
+	char	*cwd;
+
+	if (!*pwd)
+	{
+		cwd = getcwd(NULL, 0);
+		*pwd = ft_cd_new_var(first_env, "PWD", cwd);
+		free(cwd);
+	}
+	if (!*old_pwd)
+		*old_pwd = ft_cd_new_var(first_env, "OLDPWD", NULL);
+}
+
+static void	ft_cd_set_oldpwd(t_env *old_pwd, char *pwd_value)
+{
+	free(old_pwd->value);
+	old_pwd->value = ft_strdup(pwd_value);
 }
 
 static void	ft_cd_previous(t_env *pwd, t_env *old_pwd, int *exit_status)
@@ -53,33 +102,26 @@ static void	ft_cd_previous(t_env *pwd, t_env *old_pwd, int *exit_status)
 	*exit_status = 0;
 }
 
-void	ft_cd(char *str, t_env *first_env, char **args, int *exit_status)
+void	ft_cd(char *str, t_env **first_env, char **args, int *exit_status)
 {
 	t_env	*pwd;
 	t_env	*home;
 	t_env	*old_pwd;
 
-	if (!first_env)
-	{
-		ft_which_cd(str, NULL, NULL, exit_status);
-		return ;
-	}
 	if (args[1] && args[2])
 	{
 		printf ("bash: cd: too many arguments\n");
 		*exit_status = 1;
 		return ;
 	}
-	pwd = NULL;
-	home = NULL;
-	old_pwd = NULL;
-	ft_cd_find_vars(first_env, &pwd, &home, &old_pwd);
+	ft_cd_find_vars(*first_env, &pwd, &home, &old_pwd);
+	ft_cd_ensure_vars(first_env, &pwd, &old_pwd);
 	if (str && str[0] == '-' && str[1] == '\0')
 	{
 		ft_cd_previous(pwd, old_pwd, exit_status);
 		return ;
 	}
-	old_pwd->value = ft_strdup(pwd->value);
+	ft_cd_set_oldpwd(old_pwd, pwd->value);
 	ft_which_cd(str, pwd, home, exit_status);
 }
 

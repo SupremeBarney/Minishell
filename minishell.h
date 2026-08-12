@@ -191,7 +191,7 @@ void			ft_unset(t_env **first_env, char *var_to_unset);
 void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);
 void			ft_env(t_env *first_env);
-void			ft_cd(char *str, t_env *first_env, char **args,
+void			ft_cd(char *str, t_env **first_env, char **args,
 					int *exit_status);
 void			ft_which_cd(char *str, t_env *pwd, t_env *home,
 					int *exit_status);
