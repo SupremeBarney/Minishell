@@ -6,104 +6,91 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 10:09:28 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/11 12:18:07 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/12 15:10:57 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_exec(t_env *path, char *str, char **argv, t_env *first_env)
+void	ft_exec(char *str, char **args, t_shell *shell)
+{
+	t_exec_info	info;
+	t_env		*parseur;
+
+	if (!shell->env)
+		return ;
+	parseur = shell->env;
+	info.pwd = NULL;
+	while (parseur)
+	{
+		if (ft_strncmp("PWD", parseur->name, 4) == 0)
+			info.pwd = ft_strdup(parseur->value);
+		parseur = parseur->next;
+	}
+	info.envp = ft_envp(shell->env);
+	info.shell = shell;
+	ft_which_exec(str, args, &info);
+}
+
+void	ft_which_exec(char *str, char **args, t_exec_info *info)
 {
 	if (!str)
 		return ;
-	if (path)
+	else if (ft_strncmp(str, "./", 2) == 0)
 	{
-		ft_exec_path(path, argv, first_env, str);
+		ft_exec_relative_path(str, args, info);
 	}
 	else if (str[0] == '/')
 	{
-		ft_exec_absolute(argv, first_env, str);
-	}
-	else
-	{
-		ft_exec_relative(argv, first_env, str);
+		ft_exec_true_path(str, args, info);
+		return ;
 	}
 }
 
-void	ft_exec_path(t_env *path, char **argv, t_env *env, char *str)
+static int	ft_is_dir(char *str)
 {
-	char	**ret;
-	int		i;
+	struct stat	st;
 
-	if (!path || !path->value)
-		return ;
-	ret = ft_split(path->value, ':');
-	i = 0;
-	while (ret[i])
+	if (stat(str, &st) == 0 && S_ISDIR(st.st_mode))
+		return (1);
+	return (0);
+}
+
+static void	ft_exec_child_error(char *str)
+{
+	int	err;
+
+	err = errno;
+	ft_putstr_fd("bash: ", 2);
+	perror(str);
+	if (err == EACCES)
+		exit(126);
+	exit(127);
+}
+
+void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == 0)
 	{
-		ret[i] = ft_strjoin(ret[i], '/');
-		ret[i] = ft_strjoin(ret[i], str);
-		if (access(ret[i], X_OK) == 0)
+		if (ft_is_dir(str))
 		{
-			execve(ret[i], argv, env);
-			while (ret[i])
-				i++;
-			ft_free_split(ret, i);
-			return ;
+			ft_putstr_fd("bash: ", 2);
+			ft_putstr_fd(str, 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+			exit(126);
 		}
-		i++;
+		if (execve(str, args, info->envp) == -1)
+			ft_exec_child_error(str);
 	}
-}
-
-void	ft_free_split(char **split, int i)
-{
-	i--;
-	while (i > 0)
+	if (pid > 0)
 	{
-		free(split[i]);
-		i--;
+		waitpid(pid, &status, 0);
+		info->shell->exit_status = wait_status_to_code(status);
 	}
-	free(split);
+	if (pid < 0)
+		perror("Eror");
 }
-
-void	ft_exec_absolute(char **argv, t_env *env, char *str)
-{
-	if (!str)
-		return ;
-	if (access(str, X_OK) == 0)
-	{
-		execve(str, argv, env);
-		return ;
-	}
-}
-
-void	ft_exec_relative(char **argv, t_env *env, char *str,)
-{
-	char	*ret;
-	char	*first_half;
-	int		i;
-	t_env	*pwd;
-
-	pwd = ft_find_pwd(env);
-	i = 0;
-	first_half = malloc (ft_strlen(pwd->value) + 2);
-	if (!first_half)
-		return ;
-	while (pwd->value[i])
-	{
-		first_half[i] = pwd->value[i];
-		i++;
-	}
-	first_half[i] = '/';
-	first_half[i + 1] = '\0';
-	ret = ft_strjoin(first_half, str);
-	if (access(ret, X_OK) == 0)
-	{
-		execve(ret, argv, env);
-		(free(first_half), free(ret));
-		return ;
-	}
-	free(first_half);
-}
-
-

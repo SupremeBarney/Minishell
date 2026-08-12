@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory_alloc_error.c                               :+:      :+:    :+:   */
+/*   ft_exit_2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 14:51:25 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/12 13:59:11 by nipichon         ###   ########.fr       */
+/*   Created: 2026/04/13 12:26:13 by nipichon          #+#    #+#             */
+/*   Updated: 2026/08/12 15:29:23 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	memory_alloc_error(void)
+int	ft_check_num_args(char **args)
 {
-	write(1, "Error\n", 6);
-	write(1, "Not enough memory available\n", 28);
+	int	i;
+
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
 }

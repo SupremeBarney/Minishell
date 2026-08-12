@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 11:38:08 by alexfran          #+#    #+#             */
-/*   Updated: 2026/01/14 09:43:55 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/12 14:28:38 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	conversion_u(va_list args)
 {
 	unsigned int	n;
 	int				count;
+	unsigned int	tmp;
 
 	n = va_arg(args, unsigned int);
 	count = 0;
@@ -47,7 +48,7 @@ int	conversion_u(va_list args)
 		count = 1;
 	else
 	{
-		unsigned int tmp = n;
+		tmp = n;
 		while (tmp > 0)
 		{
 			tmp /= 10;
@@ -100,7 +101,7 @@ int	ft_printf(const char *format, ...)
 	while (format[i])
 	{
 		if (format[i] == '%' && format[i + 1])
-		{	
+		{
 			res += condition(format[i + 1], va);
 			i += 2;
 			res -= 2;

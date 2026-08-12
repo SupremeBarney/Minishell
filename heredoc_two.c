@@ -1,19 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory_alloc_error.c                               :+:      :+:    :+:   */
+/*   heredoc_two.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 14:51:25 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/12 13:59:11 by nipichon         ###   ########.fr       */
+/*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
+/*   Updated: 2026/08/12 14:35:23 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	memory_alloc_error(void)
+char	*heredoc_expansion(char *str, t_shell shell)
 {
-	write(1, "Error\n", 6);
-	write(1, "Not enough memory available\n", 28);
+	int		i;
+	int		flag;
+	char	*res;
+	char	*tmp_dollar;
+	char	tmp[2];
+
+	i = ((flag = 0));
+	res = ft_strdup("");
+	tmp[1] = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+		{
+			tmp_dollar = handle_dollar(str, &i, shell, flag);
+			res = strjoin_free(res, tmp_dollar);
+			free(tmp_dollar);
+		}
+		else
+		{
+			tmp[0] = str[i++];
+			res = strjoin_free(res, tmp);
+		}
+	}
+	return (res);
 }

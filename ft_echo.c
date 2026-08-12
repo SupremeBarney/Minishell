@@ -6,18 +6,96 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:16:10 by nipichon          #+#    #+#             */
-/*   Updated: 2026/06/18 12:51:11 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/12 15:02:28 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_echo_with_redirect(char **args, char *redirection)
+static void	ft_count_words(char *str)
 {
 	int	i;
-	int o;
 
-	o = open(redirection, O_WRONLY);
+	i = 0;
+	while (str[i])
+	{
+		while (str[i] && str[i] == ' ')
+			i++;
+		while (str[i] && str[i] != ' ')
+		{
+			write(1, &str[i], 1);
+			i++;
+		}
+		while (str[i] && str[i] == ' ')
+			i++;
+		if (str[i])
+			write(1, " ", 1);
+	}
+}
+
+static int	ft_check_if_n(char *str)
+{
+	int	i;
+
+	i = 1;
+	if (str[0] != '-')
+		return (0);
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static void	ft_echo_n_write(char **args)
+{
+	int	count;
+	int	j;
+	int	i;
+
+	count = 0;
+	i = 2;
+	while (args[i])
+	{
+		if (count == 1 || ft_check_if_n(args[i]) != 1)
+		{
+			count = 1;
+			j = 0;
+			while (args[i][j])
+			{
+				if (args[i][j] != '\\')
+					write (1, &args[i][j], 1);
+				j++;
+			}
+			if (args[i + 1])
+				write(1, " ", 1);
+		}
+		i++;
+	}
+}
+
+void	ft_echo_n(char **args)
+{
+	if (!args || !args[0])
+	{
+		write(1, "\n", 1);
+		return ;
+	}
+	ft_echo_n_write(args);
+	return ;
+}
+
+void	ft_echo(char **args)
+{
+	int	i;
+
+	if (args[1] && ft_check_if_n(args[1]) == 1)
+	{
+		ft_echo_n(args);
+		return ;
+	}
 	if (!args || !args[0])
 	{
 		write(1, "\n", 1);
@@ -26,81 +104,11 @@ void	ft_echo_with_redirect(char **args, char *redirection)
 	i = 1;
 	while (args[i])
 	{
-		ft_putstr_fd(args[i], o);
+		ft_count_words(args[i]);
 		if (args[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
 	write(1, "\n", 1);
 	return ;
-
-}
-
-void	ft_echo_n_with_redirect(char **args, char *redirection)
-{
-	int	i;
-	int o;
-
-	o = open(redirection, O_WRONLY);
-	if (!args || !args[0])
-	{
-		write(1, "\n", 1);
-		return ;
-	}
-	i = 2;
-	while (args[i])
-	{
-		ft_putstr_fd(args[i], o);
-		if (args[i + 1])
-			write(1, " ", 1);
-		i++;
-	}
-	return ;
-}
-
-void	ft_echo_n(char **args, char *redirection)
-{
-	int	i;
-
-	if (!redirection)
-	{
-		if (!args || !args[0])
-		{
-			write(1, "\n", 1);
-			return ;
-		}
-		i = 2;
-		while (args[i])
-		{
-			ft_putstr_fd(args[i], 1);
-			if (args[i + 1])
-				write(1, " ", 1);
-			i++;
-		}
-		return ;
-	}
-}
-
-void	ft_echo(char **args, char *redirection)
-{
-	int	i;
-
-	if (!redirection)
-	{
-		if (!args || !args[0])
-		{
-			write(1, "\n", 1);
-			return ;
-		}
-		i = 1;
-		while (args[i])
-		{
-			ft_putstr_fd(args[i], 1);
-			if (args[i + 1])
-				write(1, " ", 1);
-			i++;
-		}
-		write(1, "\n", 1);
-		return ;
-	}
 }

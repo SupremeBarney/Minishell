@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:11:11 by alexfran          #+#    #+#             */
-/*   Updated: 2025/11/28 16:16:19 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:56:28 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,6 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	}
 	dst[i + j] = '\0';
 	while (src[j])
-			j++;
+		j++;
 	return (i + j);
 }

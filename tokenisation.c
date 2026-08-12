@@ -45,8 +45,14 @@ void	add_node(t_token **tokens, char *token, t_shell shell)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
+	cur = *tokens;
+	while (cur && cur->next)
+		cur = cur->next;
 	new_token->token_type = which_type(token);
-	if (new_token->token_type == WORD)
+	new_token->had_quotes = (nb_of_quotes(token) > 0);
+	if (new_token->token_type == WORD && cur && cur->token_type == HEREDOC)
+		new_token->token = no_quotes(token);
+	else if (new_token->token_type == WORD)
 		new_token->token = expansion(token, shell);
 	else
 		new_token->token = ft_strdup(token);
@@ -55,12 +61,7 @@ void	add_node(t_token **tokens, char *token, t_shell shell)
 	if (!*tokens)
 		*tokens = new_token;
 	else
-	{
-		cur = *tokens;
-		while (cur->next)
-			cur = cur->next;
 		cur->next = new_token;
-	}
 }
 
 void	handle_operator(char *str, t_token **tokens, int *i, t_shell shell)
@@ -89,7 +90,8 @@ void	tokenise_loop(char *str, t_token **tokens, t_parse *p, t_shell shell)
 			tok_space(str, tokens, p, shell);
 			continue ;
 		}
-		else if (str[p->i] == '|' || str[p->i] == '<' || str[p->i] == '>')
+		else if ((str[p->i] == '|' || str[p->i] == '<' || str[p->i] == '>')
+			&& p->quote_flag == 0)
 		{
 			tok_operator(str, tokens, p, shell);
 			continue ;

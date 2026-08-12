@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:09:21 by alexfran          #+#    #+#             */
-/*   Updated: 2025/11/27 17:14:11 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:56:12 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 		dst[i] = '\0';
 	}
 	while (src[i])
-			i++;
+		i++;
 	return (i);
 }
