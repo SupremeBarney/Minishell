@@ -8,16 +8,19 @@ LDFLAGS = -Llibftprintf
 READLINE = -lreadline -lncurses
 LDLIBS  = -lftprintf $(READLINE)
 
+LIBFT = libftprintf/libftprintf.a
+LIBFT_SRC = $(wildcard libftprintf/*.c libftprintf/libft/*.c)
+
 SRC = $(wildcard *.c)
 
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 
-libftprintf:
+$(LIBFT): $(LIBFT_SRC)
 	$(MAKE) -C libftprintf
 
-$(NAME): libftprintf $(OBJ)
+$(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $(NAME)
 
 %.o: %.c minishell.h
@@ -33,4 +36,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re libftprintf
+.PHONY: all clean fclean re
