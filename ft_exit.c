@@ -85,43 +85,47 @@ static long long	ft_exit_atoll(char *str, int *overflow)
 	return ((long long)res);
 }
 
-static int	ft_exit_code(char *arg, int prev_status)
+static int	ft_exit_code(char *arg, int prev_status, int *bad)
 {
 	long long	code;
 	int			overflow;
 
+	*bad = 0;
 	if (!arg)
 		return (prev_status);
 	if (!ft_is_exitable_char_check(arg))
 	{
 		exit_error(arg);
+		*bad = 1;
 		return (2);
 	}
 	code = ft_exit_atoll(arg, &overflow);
 	if (overflow)
 	{
 		exit_error(arg);
+		*bad = 1;
 		return (2);
 	}
 	return ((unsigned char)code);
 }
 
-void	ft_exit(int exit_status, t_token *tokens, t_cmd *cmd, t_shell shell)
+void	ft_exit(int *exit_status, t_token *tokens, t_cmd *cmd, t_shell shell)
 {
-	int	args_num;
+	int	code;
+	int	bad;
 
-	args_num = ft_check_num_args(cmd->args);
-	if (args_num > 2)
+	code = ft_exit_code(cmd->args[1], *exit_status, &bad);
+	if (!bad && ft_check_num_args(cmd->args) > 2)
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);
+		*exit_status = 1;
 		return ;
 	}
-	exit_status = ft_exit_code(cmd->args[1], exit_status);
 	free_tokens(tokens);
 	free_cmd(cmd);
 	free_env(&shell);
 	clear_history();
-	exit(exit_status);
+	exit(code);
 }
 
 

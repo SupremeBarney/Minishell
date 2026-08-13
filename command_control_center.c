@@ -71,7 +71,7 @@ static int	dispatch_builtin(t_cmd *cmd, t_shell *shell, t_token *tokens)
 	else if (ft_strncmp(cmd->args[0], "env", 4) == 0)
 		(ft_env(shell->env), shell->exit_status = 0);
 	else if (ft_strncmp(cmd->args[0], "exit", 5) == 0)
-		ft_exit(shell->exit_status, tokens, cmd, *shell);
+		ft_exit(&shell->exit_status, tokens, cmd, *shell);
 	else if (ft_strncmp(cmd->args[0], "export", 7) == 0)
 		ft_export(&shell->env, cmd->args, &shell->exit_status);
 	else if (ft_strncmp(cmd->args[0], "pwd", 4) == 0)
@@ -127,14 +127,16 @@ void	command_control(t_cmd *com_to_exec,
 
 static int	ft_path_has_exec(char *dir, char *str)
 {
-	char	*tmp;
-	char	*full;
-	int		ok;
+	struct stat	st;
+	char		*tmp;
+	char		*full;
+	int			ok;
 
 	tmp = ft_strjoin(dir, "/");
 	full = ft_strjoin(tmp, str);
 	free(tmp);
-	ok = (access(full, X_OK) == 0);
+	ok = (stat(full, &st) == 0 && S_ISREG(st.st_mode)
+			&& access(full, X_OK) == 0);
 	free(full);
 	return (ok);
 }

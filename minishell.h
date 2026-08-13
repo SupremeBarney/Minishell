@@ -184,7 +184,7 @@ void			ft_path_exec(char *str, t_shell *shell, char **args, int i);
 char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
 int				wait_status_to_code(int status);
-void			ft_exit(int exit_status, t_token *tokens,
+void			ft_exit(int *exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
 void			ft_export(t_env **env, char **name, int *exit_status);
 void			ft_free_env(t_env *var);
