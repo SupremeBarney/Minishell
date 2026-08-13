@@ -143,9 +143,10 @@ int	process_line(char *read_line, t_shell *shell)
 
 	tokens = NULL;
 	cmd = NULL;
-	if (slash_parser(read_line) || pipe_with_space(read_line)
-		|| ampersand_parser(read_line))
-		return (add_history(read_line), 0);
+	if (slash_parser(read_line))
+		return (shell->exit_status = 126, add_history(read_line), 0);
+	if (pipe_with_space(read_line) || ampersand_parser(read_line))
+		return (shell->exit_status = 2, add_history(read_line), 0);
 	add_history(read_line);
 	tokenisation(read_line, &tokens, *shell);
 	if (!tokens)
