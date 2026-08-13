@@ -40,7 +40,7 @@ static	int	ft_is_exitable_char_check(char *str)
 	return (1);
 }
 
-static void	exit_error(char *arg)
+void	exit_error(char *arg)
 {
 	ft_putstr_fd("bash: exit: ", 2);
 	ft_putstr_fd(arg, 2);

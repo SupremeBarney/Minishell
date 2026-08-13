@@ -186,6 +186,12 @@ char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
 int				wait_status_to_code(int status);
 int				wait_child(pid_t pid);
+void			cd_error(char *arg, char *msg);
+char			*ft_squeeze_slashes(char *str);
+int				ft_is_dir(char *str);
+void			ft_exec_child_error(char *str);
+void			export_error(char *arg);
+void			exit_error(char *arg);
 void			ft_exit(int *exit_status, t_token *tokens,
 					t_cmd *cmd, t_shell shell);
 void			ft_export(t_env **env, char **name, int *exit_status);

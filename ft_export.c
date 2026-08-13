@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	export_error(char *arg)
+void	export_error(char *arg)
 {
 	ft_putstr_fd("bash: export: `", 2);
 	ft_putstr_fd(arg, 2);

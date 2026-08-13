@@ -52,7 +52,7 @@ void	ft_which_exec(char *str, char **args, t_exec_info *info)
 	}
 }
 
-static int	ft_is_dir(char *str)
+int	ft_is_dir(char *str)
 {
 	struct stat	st;
 
@@ -61,7 +61,7 @@ static int	ft_is_dir(char *str)
 	return (0);
 }
 
-static void	ft_exec_child_error(char *str)
+void	ft_exec_child_error(char *str)
 {
 	int	err;
 

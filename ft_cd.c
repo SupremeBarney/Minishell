@@ -32,7 +32,7 @@ static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 	}
 }
 
-static void	cd_error(char *arg, char *msg)
+void	cd_error(char *arg, char *msg)
 {
 	ft_putstr_fd("bash: cd: ", 2);
 	ft_putstr_fd(arg, 2);
@@ -192,7 +192,7 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 		ft_cd_backtrack_rest(str, pwd, home, exit_status);
 }
 
-static char	*ft_squeeze_slashes(char *str)
+char	*ft_squeeze_slashes(char *str)
 {
 	char	*res;
 	int		i;
