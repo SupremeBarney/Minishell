@@ -33,3 +33,17 @@ int	wait_status_to_code(int status)
 		return (128 + WTERMSIG(status));
 	return (0);
 }
+
+int	wait_child(pid_t pid)
+{
+	int	status;
+
+	status = 0;
+	signal(SIGINT, SIG_IGN);
+	while (waitpid(pid, &status, 0) == -1 && errno == EINTR)
+		;
+	setup_signals();
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		write(1, "\n", 1);
+	return (wait_status_to_code(status));
+}

@@ -27,15 +27,11 @@ int	nb_cmds(t_cmd *cmd)
 
 void	wait_pipeline(pid_t last_pid, t_shell *shell)
 {
-	int	status;
-
-	waitpid(last_pid, &status, 0);
-	if (WIFEXITED(status))
-		shell->exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		shell->exit_status = 128 + WTERMSIG(status);
+	shell->exit_status = wait_child(last_pid);
+	signal(SIGINT, SIG_IGN);
 	while (waitpid(-1, NULL, 0) > 0)
 		;
+	setup_signals();
 }
 
 void	pipeline_child(t_cmd *cur, t_shell *shell, t_token *tokens, t_pipe *pfd)

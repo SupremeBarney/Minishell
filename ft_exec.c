@@ -76,7 +76,6 @@ static void	ft_exec_child_error(char *str)
 void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 {
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid == 0)
@@ -93,10 +92,7 @@ void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 			ft_exec_child_error(str);
 	}
 	if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		info->shell->exit_status = wait_status_to_code(status);
-	}
+		info->shell->exit_status = wait_child(pid);
 	if (pid < 0)
 		perror("Eror");
 }
@@ -127,16 +123,12 @@ static void	ft_exec_rel_child(char *str, char **args, t_exec_info *info)
 void	ft_exec_relative_path(char *str, char **args, t_exec_info *info)
 {
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid == 0)
 		ft_exec_rel_child(str, args, info);
 	if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		info->shell->exit_status = wait_status_to_code(status);
-	}
+		info->shell->exit_status = wait_child(pid);
 	if (pid < 0)
 		perror("EROROR");
 }

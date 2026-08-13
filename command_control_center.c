@@ -183,7 +183,6 @@ void	ft_path_exec(char *str, t_shell *shell, char **args, int i)
 	char	**envp;
 	char	*tmp;
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid == 0 && i == 0)
@@ -211,10 +210,7 @@ void	ft_path_exec(char *str, t_shell *shell, char **args, int i)
 		exit(127);
 	}
 	if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		shell->exit_status = wait_status_to_code(status);
-	}
+		shell->exit_status = wait_child(pid);
 	if (pid < 0)
 		perror("error");
 }
