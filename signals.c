@@ -37,3 +37,9 @@ void	setup_signals(void)
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sb, NULL);
 }
+
+void	reset_child_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}

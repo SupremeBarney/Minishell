@@ -40,6 +40,7 @@ void	wait_pipeline(pid_t last_pid, t_shell *shell)
 
 void	pipeline_child(t_cmd *cur, t_shell *shell, t_token *tokens, t_pipe *pfd)
 {
+	reset_child_signals();
 	if (pfd->prev_fd != -1)
 		(dup2(pfd->prev_fd, STDIN_FILENO), close(pfd->prev_fd));
 	if (cur->next)

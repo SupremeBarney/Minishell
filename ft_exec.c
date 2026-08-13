@@ -81,6 +81,7 @@ void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 	pid = fork();
 	if (pid == 0)
 	{
+		reset_child_signals();
 		if (ft_is_dir(str))
 		{
 			ft_putstr_fd("bash: ", 2);
@@ -106,6 +107,7 @@ static void	ft_exec_rel_child(char *str, char **args, t_exec_info *info)
 	char	*tmp;
 	char	*name;
 
+	reset_child_signals();
 	tmp = ft_strjoin(info->pwd, "/");
 	name = ft_enlever_str(str);
 	ret = ft_strjoin(tmp, name);

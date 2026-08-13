@@ -97,6 +97,7 @@ extern volatile sig_atomic_t	g_signal;
 
 void			handle_sigint(int sig);
 void			setup_signals(void);
+void			reset_child_signals(void);
 char			*strjoin_free(char *s1, char *s2);
 char			*read_heredoc(char *delimiter, t_shell shell, int expand);
 char			*read_pipe_all(int fd);

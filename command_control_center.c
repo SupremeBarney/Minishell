@@ -188,6 +188,7 @@ void	ft_path_exec(char *str, t_shell *shell, char **args, int i)
 	pid = fork();
 	if (pid == 0 && i == 0)
 	{
+		reset_child_signals();
 		parseur = shell->env;
 		i = 0;
 		while (parseur)
