@@ -30,6 +30,8 @@ void	ft_exec(char *str, char **args, t_shell *shell)
 	info.envp = ft_envp(shell->env);
 	info.shell = shell;
 	ft_which_exec(str, args, &info);
+	free(info.pwd);
+	free_chars(info.envp);
 }
 
 void	ft_which_exec(char *str, char **args, t_exec_info *info)
@@ -98,25 +100,36 @@ void	ft_exec_true_path(char *str, char **args, t_exec_info *info)
 		perror("Eror");
 }
 
-void	ft_exec_relative_path(char *str, char **args, t_exec_info *info)
+static void	ft_exec_rel_child(char *str, char **args, t_exec_info *info)
 {
 	char	*ret;
 	char	*tmp;
+	char	*name;
+
+	tmp = ft_strjoin(info->pwd, "/");
+	name = ft_enlever_str(str);
+	ret = ft_strjoin(tmp, name);
+	free(tmp);
+	free(name);
+	if (ft_is_dir(ret))
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
+		exit(126);
+	}
+	if (execve(ret, args, info->envp) == -1)
+		ft_exec_child_error(str);
+}
+
+void	ft_exec_relative_path(char *str, char **args, t_exec_info *info)
+{
 	pid_t	pid;
 	int		status;
 
 	pid = fork();
 	if (pid == 0)
-	{
-		tmp = ft_strjoin(info->pwd, "/");
-		str = ft_enlever_str(str);
-		ret = ft_strjoin(tmp, str);
-		free (tmp);
-		if (execve(ret, args, info->envp) == -1)
-		{
-			exit(EXIT_FAILURE);
-		}
-	}
+		ft_exec_rel_child(str, args, info);
 	if (pid > 0)
 	{
 		waitpid(pid, &status, 0);

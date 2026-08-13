@@ -40,6 +40,13 @@ static	int	ft_is_exitable_char_check(char *str)
 	return (1);
 }
 
+static void	exit_error(char *arg)
+{
+	ft_putstr_fd("bash: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+}
+
 static int	ft_exit_sign(char *str, int *i)
 {
 	int	neg;
@@ -87,13 +94,13 @@ static int	ft_exit_code(char *arg, int prev_status)
 		return (prev_status);
 	if (!ft_is_exitable_char_check(arg))
 	{
-		printf("bash: exit: %s: numeric argument required\n", arg);
+		exit_error(arg);
 		return (2);
 	}
 	code = ft_exit_atoll(arg, &overflow);
 	if (overflow)
 	{
-		printf("bash: exit: %s: numeric argument required\n", arg);
+		exit_error(arg);
 		return (2);
 	}
 	return ((unsigned char)code);
@@ -106,7 +113,7 @@ void	ft_exit(int exit_status, t_token *tokens, t_cmd *cmd, t_shell shell)
 	args_num = ft_check_num_args(cmd->args);
 	if (args_num > 2)
 	{
-		printf("bash: exit: too many arguments\n");
+		ft_putstr_fd("bash: exit: too many arguments\n", 2);
 		return ;
 	}
 	exit_status = ft_exit_code(cmd->args[1], exit_status);

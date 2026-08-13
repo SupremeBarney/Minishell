@@ -12,6 +12,20 @@
 
 #include "minishell.h"
 
+static void	export_error(char *arg)
+{
+	ft_putstr_fd("bash: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+}
+
+static void	export_opt_error(char c)
+{
+	ft_putstr_fd("bash: export: -", 2);
+	ft_putchar_fd(c, 2);
+	ft_putstr_fd(": invalid option\n", 2);
+}
+
 static int	ft_val_id_two(char *str)
 {
 	int	i;
@@ -20,10 +34,7 @@ static int	ft_val_id_two(char *str)
 	error = 0;
 	i = 0;
 	if (str[0] == '-')
-	{
-		printf("bash: export: '-%c': invalid option\n", str[1]);
-		return (0);
-	}
+		return (export_opt_error(str[1]), 0);
 	while(str[i] && str[i] != '=')
 	{
 		if (str[i] == '@' || str[i] == '-' || str[i] == '.' || str[i] == '}' || str[i] == '{' || str[i] == '*' || str[i] == '#' || str[i] == '+')
@@ -43,7 +54,7 @@ static int	ft_val_id_two(char *str)
 	}
 	if (error >= 1)
 	{
-		printf("bash: export: '%s': not a valid identifier\n", str);
+		export_error(str);
 		return (0);	
 	}
 	return (1);
@@ -56,7 +67,7 @@ static int	ft_is_valid_identifier(char *str)
 	error = 0;
 	if (str[0] == '\0')
 	{
-		printf("bash: export: `': not a valid identifier\n");
+		ft_putstr_fd("bash: export: `': not a valid identifier\n", 2);
 		return (0);
 	}
 	if (str[0] == '=')
@@ -71,7 +82,7 @@ static int	ft_is_valid_identifier(char *str)
 		error++;
 	if (error >= 1)
 	{
-		printf("bash: export: '%s': not a valid identifier\n", str);
+		export_error(str);
 		return (0);
 	}
 	return (ft_val_id_two(str));

@@ -32,6 +32,13 @@ static void	ft_cd_find_vars(t_env *env, t_env **pwd, t_env **home,
 	}
 }
 
+static void	cd_error(char *arg, char *msg)
+{
+	ft_putstr_fd("bash: cd: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(msg, 2);
+}
+
 static void	ft_cd_ensure_vars(t_env **first_env, t_env **pwd,
 		t_env **old_pwd)
 {
@@ -66,7 +73,7 @@ static void	ft_cd_previous(t_env *pwd, t_env *old_pwd, int *exit_status)
 	}
 	if (chdir(old_pwd->value) == -1)
 	{
-		printf("bash: cd: %s: No such file or directory\n", old_pwd->value);
+		cd_error(old_pwd->value, ": No such file or directory\n");
 		*exit_status = 1;
 		return ;
 	}
@@ -86,7 +93,7 @@ void	ft_cd(char *str, t_env **first_env, char **args, int *exit_status)
 
 	if (args[1] && args[2])
 	{
-		printf ("bash: cd: too many arguments\n");
+		ft_putstr_fd("bash: cd: too many arguments\n", 2);
 		*exit_status = 1;
 		return ;
 	}
@@ -128,9 +135,9 @@ void	ft_cd_curdir(t_env *pwd, int *exit_status)
 {
 	if (!pwd)
 	{
-		printf("cd: error retrieving current directory: ");
-		printf("getcwd: cannot access parent directories: ");
-		printf("No such file or directory\n");
+		ft_putstr_fd("cd: error retrieving current directory: ", 2);
+		ft_putstr_fd("getcwd: cannot access parent directories: ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
 		*exit_status = 1;
 		return ;
 	}
@@ -173,7 +180,7 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 	new_pwd[i] = '\0';
 	if (chdir(new_pwd) == -1)
 	{
-		printf("bash: cd: %s: No such file or directory\n", str);
+		cd_error(str, ": No such file or directory\n");
 		free(new_pwd);
 		*exit_status = 1;
 		return ;
