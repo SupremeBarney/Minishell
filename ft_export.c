@@ -150,6 +150,20 @@ char	*after_equal(char *a)
 	return (ret);
 }
 
+static void	export_update(t_env *found, t_env *new_node)
+{
+	if (new_node->equal)
+	{
+		free(found->value);
+		found->value = new_node->value;
+		found->equal = 1;
+	}
+	else
+		free(new_node->value);
+	free(new_node->name);
+	free(new_node);
+}
+
 static void	ft_export_insert(t_env **env, t_env *new_node, char *first)
 {
 	t_env	*finder;
@@ -160,10 +174,7 @@ static void	ft_export_insert(t_env **env, t_env *new_node, char *first)
 	while (finder)
 	{
 		if (ft_strncmp(finder->name, first, ft_strlen(first) + 1) == 0)
-		{
-			finder->value = new_node->value;
-			return ;
-		}
+			return (export_update(finder, new_node));
 		before = finder;
 		finder = finder->next;
 	}
