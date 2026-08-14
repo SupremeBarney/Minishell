@@ -190,6 +190,8 @@ void	main_loop(char **envp)
 		read_line = readline("Barney$ ");
 		if (!read_line)
 			(free_env(&shell), exit(shell.exit_status));
+		if (g_signal == SIGINT)
+			shell.exit_status = 130;
 		if (read_line[0])
 			read_line = complete_quotes(read_line);
 		if (read_line && read_line[0])
