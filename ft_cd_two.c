@@ -6,11 +6,35 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/12 14:56:27 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/17 14:43:50 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_squeeze_slashes(char *str)
+{
+	char	*res;
+	int		i;
+	int		j;
+
+	res = malloc(ft_strlen(str) + 1);
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		res[j++] = str[i];
+		if (str[i] == '/')
+			while (str[i] == '/')
+				i++;
+		else
+			i++;
+	}
+	if (j > 1 && res[j - 1] == '/')
+		j--;
+	res[j] = '\0';
+	return (res);
+}
 
 void	ft_cd_true_path(char *str, t_env *pwd, int *exit_status)
 {
@@ -62,7 +86,9 @@ void	ft_cd_relative_path(char *str, t_env *pwd, int *exit_status)
 		*exit_status = 1;
 		return ;
 	}
-	clean = ft_squeeze_slashes(ret);
+	clean = getcwd(NULL, 0);
+	if (!clean)
+		clean = ft_squeeze_slashes(ret);
 	free(ret);
 	free(pwd->value);
 	pwd->value = clean;

@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/12 15:31:05 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/17 14:49:33 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,8 +201,8 @@ void			ft_unset(t_env **first_env, char *var_to_unset);
 void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);
 void			ft_env(t_env *first_env);
-void			ft_cd(char *str, t_env *first_env, char **args,
-					int *exit_status);
+void			ft_cd(char *str, t_env **first_env,
+					char **args, int *exit_status);
 void			ft_which_cd(char *str, t_env *pwd, t_env *home,
 					int *exit_status);
 void			ft_cd_curdir(t_env *pwd, int *exit_status);

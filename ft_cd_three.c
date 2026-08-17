@@ -6,19 +6,42 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/12 15:23:17 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/17 14:47:59 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static int	ft_is_backtrack(char *str)
+{
+	return (str[0] == '.' && str[1] == '.'
+		&& (str[2] == '\0' || str[2] == '/'));
+}
+
+void	ft_which_cd(char *str, t_env *pwd, t_env *home, int *exit_status)
+{
+	if (!str || str[0] == '\n')
+	{
+		ft_cd_with_nothing(home, pwd, exit_status);
+		return ;
+	}
+	else if (ft_is_backtrack(str))
+		ft_cd_backtrack(str, pwd, home, exit_status);
+	else if (str[0] == '.' && str[1] == '\0')
+		ft_cd_curdir(pwd, exit_status);
+	else if (str[0] == '/')
+		ft_cd_true_path(str, pwd, exit_status);
+	else
+		ft_cd_relative_path(str, pwd, exit_status);
+}
+
 void	ft_cd_curdir(t_env *pwd, int *exit_status)
 {
 	if (!pwd)
 	{
-		printf("cd: error retrieving current directory: ");
-		printf("getcwd: cannot access parent directories: ");
-		printf("No such file or directory\n");
+		ft_putstr_fd("cd: error retrieving current directory: ", 2);
+		ft_putstr_fd("getcwd: cannot access parent directories: ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
 		*exit_status = 1;
 		return ;
 	}
@@ -56,10 +79,12 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 	i = ft_strlen(new_pwd) - 1;
 	while (i > 0 && new_pwd[i] != '/')
 		i--;
+	if (i == 0)
+		new_pwd[i++] = '/';
 	new_pwd[i] = '\0';
 	if (chdir(new_pwd) == -1)
 	{
-		printf("bash: cd: %s: No such file or directory\n", str);
+		cd_error(str, ": No such file or directory\n");
 		free(new_pwd);
 		*exit_status = 1;
 		return ;
@@ -69,28 +94,4 @@ void	ft_cd_backtrack(char *str, t_env *pwd, t_env *home, int *exit_status)
 	*exit_status = 0;
 	if (str[2] && str[2] == '/')
 		ft_cd_backtrack_rest(str, pwd, home, exit_status);
-}
-
-char	*ft_squeeze_slashes(char *str)
-{
-	char	*res;
-	int		i;
-	int		j;
-
-	res = malloc(ft_strlen(str) + 1);
-	i = 0;
-	j = 0;
-	while (str[i])
-	{
-		res[j++] = str[i];
-		if (str[i] == '/')
-			while (str[i] == '/')
-				i++;
-		else
-			i++;
-	}
-	if (j > 1 && res[j - 1] == '/')
-		j--;
-	res[j] = '\0';
-	return (res);
 }
