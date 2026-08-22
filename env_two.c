@@ -1,35 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   env_two.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 15:33:06 by nipichon         ###   ########.fr       */
+/*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
+/*   Updated: 2026/08/22 16:24:21 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_env *first_env, int is_export)
+t_env	*add_env_var(t_env **env, char *name, char *value)
 {
-	t_env	*parseur;
+	t_env	*node;
+	t_env	*tail;
 
-	if (!first_env)
-		return ;
-	parseur = first_env;
-	while (parseur)
-	{
-		if (parseur->equal == 1 && parseur->value)
-		{
-			if (is_export == 1)
-				ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(parseur->name, 1);
-			ft_putstr_fd("=", 1);
-			ft_putstr_fd(parseur->value, 1);
-			ft_putstr_fd("\n", 1);
-		}
-		parseur = parseur->next;
-	}
+	node = malloc(sizeof(t_env));
+	if (!node)
+		return (NULL);
+	node->name = ft_strdup(name);
+	node->value = NULL;
+	if (value)
+		node->value = ft_strdup(value);
+	node->next = NULL;
+	node->equal = (value != NULL);
+	if (!*env)
+		return (*env = node, node);
+	tail = *env;
+	while (tail->next)
+		tail = tail->next;
+	tail->next = node;
+	return (node);
 }

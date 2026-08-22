@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/06/12 12:34:24 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/22 15:48:12 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,9 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 	t_cmd *cur_cmd, t_cmd **cmd)
 {
 	int		i;
-	int		rank;
 
 	i = 0;
-	rank = 0;
+	shell.rank = 0;
 	while (cur_token)
 	{
 		if (cur_token->token_type == WORD && (cur_token->had_quotes
@@ -57,10 +56,10 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 		{
 			if (!pipe_token(&cur_cmd, &cur_token, &i))
 				return (0);
-			rank = 0;
+			shell.rank = 0;
 			continue ;
 		}
-		else if (!handle_redir(cmd, &cur_token, cur_cmd, shell, &rank))
+		else if (!handle_redir(cmd, &cur_token, cur_cmd, shell))
 			return (0);
 		cur_token = cur_token->next;
 	}

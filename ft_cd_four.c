@@ -1,35 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_cd_four.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 15:33:06 by nipichon         ###   ########.fr       */
+/*   Created: 2026/04/13 12:44:40 by nipichon          #+#    #+#             */
+/*   Updated: 2026/08/22 16:00:55 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_env *first_env, int is_export)
+void	cd_error(char *arg, char *msg)
 {
-	t_env	*parseur;
+	ft_putstr_fd("bash: cd: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(msg, 2);
+}
 
-	if (!first_env)
-		return ;
-	parseur = first_env;
-	while (parseur)
-	{
-		if (parseur->equal == 1 && parseur->value)
-		{
-			if (is_export == 1)
-				ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(parseur->name, 1);
-			ft_putstr_fd("=", 1);
-			ft_putstr_fd(parseur->value, 1);
-			ft_putstr_fd("\n", 1);
-		}
-		parseur = parseur->next;
-	}
+void	ft_cd_set_oldpwd(t_env *old_pwd, char *pwd_value)
+{
+	free(old_pwd->value);
+	old_pwd->value = ft_strdup(pwd_value);
+	old_pwd->equal = 1;
 }

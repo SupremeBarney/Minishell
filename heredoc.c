@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/07/30 20:04:29 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/22 16:32:07 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,23 +36,6 @@ char	*heredoc_expansion(char *str, t_shell shell)
 			tmp[0] = str[i++];
 			res = strjoin_free(res, tmp);
 		}
-	}
-	return (res);
-}
-
-char	*read_pipe_all(int fd)
-{
-	char	buf[1024];
-	char	*res;
-	int		n;
-
-	res = ft_strdup("");
-	n = read(fd, buf, 1023);
-	while (n > 0)
-	{
-		buf[n] = 0;
-		res = strjoin_free(res, buf);
-		n = read(fd, buf, 1023);
 	}
 	return (res);
 }

@@ -1,35 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   heredoc_two.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 15:33:06 by nipichon         ###   ########.fr       */
+/*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
+/*   Updated: 2026/08/22 16:31:58 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_env *first_env, int is_export)
+char	*read_pipe_all(int fd)
 {
-	t_env	*parseur;
+	char	buf[1024];
+	char	*res;
+	int		n;
 
-	if (!first_env)
-		return ;
-	parseur = first_env;
-	while (parseur)
+	res = ft_strdup("");
+	n = read(fd, buf, 1023);
+	while (n > 0)
 	{
-		if (parseur->equal == 1 && parseur->value)
-		{
-			if (is_export == 1)
-				ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(parseur->name, 1);
-			ft_putstr_fd("=", 1);
-			ft_putstr_fd(parseur->value, 1);
-			ft_putstr_fd("\n", 1);
-		}
-		parseur = parseur->next;
+		buf[n] = 0;
+		res = strjoin_free(res, buf);
+		n = read(fd, buf, 1023);
 	}
+	return (res);
 }

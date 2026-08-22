@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   outils.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 12:54:58 by alexfran          #+#    #+#             */
-/*   Updated: 2025/12/16 12:06:25 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:57:26 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	ft_putnbr_hexa(unsigned long n, int x)
 			ft_putchar_fd(base_min[n], 1);
 	}
 	else
-	{	
+	{
 		ft_putnbr_hexa(n / 16, x);
 		ft_putnbr_hexa(n % 16, x);
 	}

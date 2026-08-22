@@ -6,7 +6,7 @@
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/29 18:56:26 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/22 17:22:18 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ typedef struct s_shell
 	t_env	*env;
 	int		exit_status;
 	char	*read_line;
+	int		rank;
 }	t_shell;
 
 typedef struct s_exec_info
@@ -93,11 +94,17 @@ typedef struct s_parse
 	int	quote_flag;
 }	t_parse;
 
+typedef struct s_varriable
+{
+	int		i;
+	char	*tmp;
+	t_env	*parseur;
+}	t_var;
+
 extern volatile sig_atomic_t	g_signal;
 
 void			handle_sigint(int sig);
 void			setup_signals(void);
-void			reset_child_signals(void);
 char			*strjoin_free(char *s1, char *s2);
 char			*read_heredoc(char *delimiter, t_shell shell, int expand);
 char			*read_pipe_all(int fd);
@@ -108,14 +115,16 @@ int				apply_heredoc(t_cmd *cmd);
 int				nb_of_tokens(t_token *token);
 void			init_cmd(t_cmd *cmd);
 int				pipe_token(t_cmd **cur_cmd, t_token **cur_token, int *i);
-void			redir_in_token(t_token **cur_token, t_cmd *cur_cmd, int rank);
+void			redir_in_token(t_token **cur_token, t_cmd *cur_cmd,
+					t_shell shell);
 int				heredoc_token(t_cmd **cmd, t_token **cur_token,
-					t_cmd *cur_cmd, t_shell shell, int rank);
-void			redir_out_token(t_token **cur_token, t_cmd *cur_cmd, int rank);
+					t_cmd *cur_cmd, t_shell shell);
+void			redir_out_token(t_token **cur_token, t_cmd *cur_cmd,
+					t_shell shell);
 void			redir_out_append(t_token **cur_token, t_cmd *cur_cmd,
-					int rank);
+					t_shell shell);
 int				handle_redir(t_cmd **cmd, t_token **cur_token,
-					t_cmd *cur_cmd, t_shell shell, int *rank);
+					t_cmd *cur_cmd, t_shell shell);
 int				while_add_cmd(t_shell shell, t_token *cur_token,
 					t_cmd *cur_cmd, t_cmd **cmd);
 int				add_cmd_node(t_shell shell, t_cmd **cmd, t_token *tokens);
@@ -133,7 +142,6 @@ void			free_chars(char **tab);
 t_env			*new_env_node(char *envp_entry);
 void			set_env(t_env **var, char **envp);
 char			*get_env_value(t_env *env, char *name);
-t_env			*add_env_var(t_env **env, char *name, char *value);
 void			display_env(t_env *var);
 char			*handle_dollar(char *str, int *i, t_shell shell, int flag);
 char			*expansion(char *str, t_shell shell);
@@ -160,6 +168,8 @@ int				apply_input(t_cmd *cmd);
 int				apply_output(t_cmd *cmd);
 void			dispatch_command(t_cmd *com_to_exec,
 					t_shell *shell, t_token *tokens);
+void			dispatch_command_second(t_cmd *com_to_exec,
+					t_shell *shell);
 int				nb_cmds(t_cmd *cmd);
 void			execute_pipeline(t_cmd *cmd, t_shell *shell, t_token *tokens);
 void			pipeline_child(t_cmd *cur, t_shell *shell,
@@ -185,24 +195,17 @@ void			ft_path_exec(char *str, t_shell *shell, char **args, int i);
 char			**ft_envp(t_env *first_env);
 t_env			*ft_find_pwd(t_env *env);
 int				wait_status_to_code(int status);
-int				wait_child(pid_t pid);
-void			cd_error(char *arg, char *msg);
-char			*ft_squeeze_slashes(char *str);
-int				ft_is_dir(char *str);
-void			ft_exec_child_error(char *str);
-void			export_error(char *arg);
-void			exit_error(char *arg);
-void			ft_exit(int *exit_status, t_token *tokens,
-					t_cmd *cmd, t_shell shell);
+void			ft_exit(int *exit_status, t_token *tokens, t_cmd *cmd,
+					t_shell shell);
 void			ft_export(t_env **env, char **name, int *exit_status);
 void			ft_free_env(t_env *var);
 void			ft_pwd(t_env *pwd, char **args, int *exit_status);
 void			ft_unset(t_env **first_env, char *var_to_unset);
 void			ft_unset_two(t_env **first_env, char *var_to_unset);
 void			memory_alloc_error(void);
-void			ft_env(t_env *first_env);
-void			ft_cd(char *str, t_env **first_env, char **args,
-					int *exit_status);
+void			ft_env(t_env *first_env, int is_export);
+void			ft_cd(char *str, t_env **first_env,
+					char **args, int *exit_status);
 void			ft_which_cd(char *str, t_env *pwd, t_env *home,
 					int *exit_status);
 void			ft_cd_curdir(t_env *pwd, int *exit_status);
@@ -211,5 +214,28 @@ void			ft_cd_backtrack(char *str, t_env *pwd, t_env *home,
 void			ft_cd_true_path(char *str, t_env *pwd, int *exit_status);
 void			ft_cd_relative_path(char *str, t_env *pwd, int *exit_status);
 void			ft_cd_with_nothing(t_env *home, t_env *pwd, int *exit_status);
+int				quote_state(char *str);
+int				ampersand_parser(char *read_line);
+int				pipe_with_space(char *read_line);
+int				slash_parser(char *read_line);
+void			quotes_error(char *tmp, int state);
+void			heredoc_write(char *expanse, char *tmp, int *pipe_fd);
+char			*heredoc_expansion(char *str, t_shell shell);
+char			*ft_squeeze_slashes(char *str);
+int				ft_check_num_args(char **args);
+int				ft_is_there_an_equal_or_not(char *str);
+int				ft_is_valid_identifier(char *str);
+void			reset_child_signals(void);
+int				wait_child(pid_t pid);
+void			cd_error(char *arg, char *msg);
+void			ft_cd_set_oldpwd(t_env *old_pwd, char *pwd_value);
+t_env			*add_env_var(t_env **env, char *name, char *value);
+int				ft_search_path(char *value, char *str);
+void			ft_exec_rel_child(char *str, char **args, t_exec_info *info);
+int				ft_is_dir(char *str);
+void			ft_exec_child_error(char *str);
+int				ft_is_exitable_char_check(char *str);
+char			*before_equal(char *a);
+void			pid_check(pid_t pid, t_shell *shell);
 
 #endif

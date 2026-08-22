@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/06/12 13:20:30 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/22 16:24:08 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,29 +88,6 @@ void	set_env(t_env **var, char **envp)
 		cur = new_var;
 		i++;
 	}
-}
-
-t_env	*add_env_var(t_env **env, char *name, char *value)
-{
-	t_env	*node;
-	t_env	*tail;
-
-	node = malloc(sizeof(t_env));
-	if (!node)
-		return (NULL);
-	node->name = ft_strdup(name);
-	node->value = NULL;
-	if (value)
-		node->value = ft_strdup(value);
-	node->next = NULL;
-	node->equal = (value != NULL);
-	if (!*env)
-		return (*env = node, node);
-	tail = *env;
-	while (tail->next)
-		tail = tail->next;
-	tail->next = node;
-	return (node);
 }
 
 char	*get_env_value(t_env *env, char *name)

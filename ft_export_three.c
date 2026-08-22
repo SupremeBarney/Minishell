@@ -1,35 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_export_three.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/13 13:30:27 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 15:33:06 by nipichon         ###   ########.fr       */
+/*   Created: 2026/04/13 13:30:06 by nipichon          #+#    #+#             */
+/*   Updated: 2026/08/22 16:40:30 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_env *first_env, int is_export)
+void	export_error(char *arg)
 {
-	t_env	*parseur;
+	ft_putstr_fd("bash: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+}
 
-	if (!first_env)
-		return ;
-	parseur = first_env;
-	while (parseur)
-	{
-		if (parseur->equal == 1 && parseur->value)
-		{
-			if (is_export == 1)
-				ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(parseur->name, 1);
-			ft_putstr_fd("=", 1);
-			ft_putstr_fd(parseur->value, 1);
-			ft_putstr_fd("\n", 1);
-		}
-		parseur = parseur->next;
-	}
+void	export_opt_error(char c)
+{
+	ft_putstr_fd("bash: export: -", 2);
+	ft_putchar_fd(c, 2);
+	ft_putstr_fd(": invalid option\n", 2);
 }

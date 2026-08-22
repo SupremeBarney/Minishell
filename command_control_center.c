@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_control_center.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/07/30 20:00:00 by alexfran         ###   ########.fr       */
+/*   Updated: 2026/08/22 16:19:45 by nipichon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static int	dispatch_builtin(t_cmd *cmd, t_shell *shell, t_token *tokens)
 	else if (ft_strncmp(cmd->args[0], "echo", 5) == 0)
 		(ft_echo(cmd->args), shell->exit_status = 0);
 	else if (ft_strncmp(cmd->args[0], "env", 4) == 0)
-		(ft_env(shell->env), shell->exit_status = 0);
+		(ft_env(shell->env, 0), shell->exit_status = 0);
 	else if (ft_strncmp(cmd->args[0], "exit", 5) == 0)
 		ft_exit(&shell->exit_status, tokens, cmd, *shell);
 	else if (ft_strncmp(cmd->args[0], "export", 7) == 0)
@@ -99,118 +99,4 @@ void	dispatch_command(t_cmd *com_to_exec,
 	ft_putstr_fd(com_to_exec->args[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
 	shell->exit_status = 127;
-}
-
-void	command_control(t_cmd *com_to_exec,
-							t_shell *shell, t_token *tokens)
-{
-	int	saved_stdin;
-	int	saved_stdout;
-
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-	if (apply_redirections(com_to_exec) == -1)
-	{
-		shell->exit_status = 1;
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
-		return ;
-	}
-	dispatch_command(com_to_exec, shell, tokens);
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
-}
-
-static int	ft_path_has_exec(char *dir, char *str)
-{
-	struct stat	st;
-	char		*tmp;
-	char		*full;
-	int			ok;
-
-	tmp = ft_strjoin(dir, "/");
-	full = ft_strjoin(tmp, str);
-	free(tmp);
-	ok = (stat(full, &st) == 0 && S_ISREG(st.st_mode)
-			&& access(full, X_OK) == 0);
-	free(full);
-	return (ok);
-}
-
-static int	ft_search_path(char *value, char *str)
-{
-	char	**path;
-	int		i;
-
-	path = ft_split(value, ':');
-	if (!path)
-		return (0);
-	i = 0;
-	while (path[i])
-	{
-		if (ft_path_has_exec(path[i], str))
-			return (free_chars(path), 1);
-		i++;
-	}
-	return (free_chars(path), 0);
-}
-
-int	ft_is_execute(char *str, t_env *first_env)
-{
-	t_env	*parseur;
-
-	parseur = first_env;
-	while (parseur)
-	{
-		if (ft_strncmp(parseur->name, "PATH", 5) == 0
-			&& parseur->value && ft_search_path(parseur->value, str))
-			return (2);
-		parseur = parseur->next;
-	}
-	if ((str[0] == '.' && str[1] == '/') || (str[0] == '/'))
-		return (1);
-	return (0);
-}
-
-void	ft_path_exec(char *str, t_shell *shell, char **args, int i)
-{
-	t_env	*parseur;
-	char	**path;
-	char	**envp;
-	char	*tmp;
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == 0 && i == 0)
-	{
-		reset_child_signals();
-		parseur = shell->env;
-		i = 0;
-		while (parseur)
-		{
-			if (ft_strncmp(parseur->name, "PATH", 5) == 0)
-			{
-				envp = ft_envp(shell->env);
-				path = ft_split (parseur->value, ':');
-				while (path[i])
-				{
-					tmp = ft_strjoin(path[i], "/");
-					path[i] = ft_strjoin(tmp, str);
-					if (execve(path[i], args, envp) != -1)
-    					exit(EXIT_FAILURE);
-					i++;
-				}
-			}
-			parseur = parseur->next;
-		}
-		exit(127);
-	}
-	if (pid > 0)
-		shell->exit_status = wait_child(pid);
-	if (pid < 0)
-		perror("error");
 }
