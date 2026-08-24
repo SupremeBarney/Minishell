@@ -40,13 +40,13 @@ int	pipe_token(t_cmd **cur_cmd, t_token **cur_token, int *i)
 	return (1);
 }
 
-int	while_add_cmd(t_shell shell, t_token *cur_token,
+int	while_add_cmd(t_shell *shell, t_token *cur_token,
 	t_cmd *cur_cmd, t_cmd **cmd)
 {
 	int		i;
 
 	i = 0;
-	shell.rank = 0;
+	shell->rank = 0;
 	while (cur_token)
 	{
 		if (cur_token->token_type == WORD && (cur_token->had_quotes
@@ -56,7 +56,7 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 		{
 			if (!pipe_token(&cur_cmd, &cur_token, &i))
 				return (0);
-			shell.rank = 0;
+			shell->rank = 0;
 			continue ;
 		}
 		else if (!handle_redir(cmd, &cur_token, cur_cmd, shell))
@@ -67,7 +67,7 @@ int	while_add_cmd(t_shell shell, t_token *cur_token,
 	return (1);
 }
 
-int	add_cmd_node(t_shell shell, t_cmd **cmd, t_token *tokens)
+int	add_cmd_node(t_shell *shell, t_cmd **cmd, t_token *tokens)
 {
 	t_token	*cur_token;
 	t_cmd	*cur_cmd;

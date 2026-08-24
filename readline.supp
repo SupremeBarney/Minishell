@@ -1,102 +1,49 @@
-#
-# Fichier de suppression Valgrind pour readline / ncurses
-#
-# Ces "fuites" sont internes a la bibliotheque readline (et a ncurses/termcap
-# qu'elle utilise). Elles sont allouees une seule fois a l'initialisation et
-# ne sont jamais liberees par la bibliotheque. Tu n'y peux rien depuis ton
-# code, et les correcteurs 42 les ignorent.
-#
-# Utilisation :
-#   valgrind --leak-check=full --show-leak-kinds=all \
-#            --suppressions=readline.supp ./minishell
-#
-
 {
-   readline_init_malloc
+   readline_still_reachable
    Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   fun:malloc
+   match-leak-kinds: reachable
    ...
-   fun:readline
+   obj:*/lib*/libreadline.so*
 }
 
 {
-   readline_init_calloc
+   readline_still_reachable_calloc
    Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
+   match-leak-kinds: reachable
    fun:calloc
    ...
-   fun:readline
+   obj:*/lib*/libreadline.so*
 }
 
 {
-   readline_init_realloc
+   readline_still_reachable_malloc
    Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   fun:realloc
-   ...
-   fun:readline
-}
-
-{
-   readline_xmalloc
-   Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
+   match-leak-kinds: reachable
    fun:malloc
-   fun:xmalloc
    ...
+   obj:*/lib*/libreadline.so*
 }
 
 {
-   readline_xrealloc
+   history_still_reachable
    Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   fun:realloc
-   fun:xrealloc
+   match-leak-kinds: reachable
    ...
+   obj:*/lib*/libhistory.so*
 }
 
 {
-   add_history_malloc
+   readline_add_history
    Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   fun:malloc
+   match-leak-kinds: reachable
    ...
    fun:add_history
 }
 
 {
-   ncurses_setupterm
+   readline_rl_initialize
    Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
+   match-leak-kinds: reachable
    ...
-   fun:_nc_setupterm
-   ...
-}
-
-{
-   ncurses_tgetent
-   Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   ...
-   fun:tgetent_sp
-   ...
-}
-
-{
-   ncurses_read_entry
-   Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   ...
-   fun:_nc_read_file_entry
-   ...
-}
-
-{
-   ncurses_build_names
-   Memcheck:Leak
-   match-leak-kinds: reachable,definite,indirect,possible
-   ...
-   fun:_nc_find_type_entry
-   ...
+   fun:readline
 }

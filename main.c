@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/08/22 16:32:58 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/24 19:37:35 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*complete_quotes(char *read_line)
+char	*complete_quotes(char *read_line, t_shell *shell)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
@@ -33,9 +33,7 @@ char	*complete_quotes(char *read_line)
 	waitpid(pid, &status, 0);
 	setup_signals();
 	free(read_line);
-	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-		return (free(res), NULL);
-	return (res);
+	return (check_quote_status(status, res, shell));
 }
 
 int	process_line(char *read_line, t_shell *shell)
@@ -55,7 +53,7 @@ int	process_line(char *read_line, t_shell *shell)
 		return (0);
 	if (valid_syntax(tokens) == 1)
 		return (free_tokens(tokens), 0);
-	if (add_cmd_node(*shell, &cmd, tokens) == 1)
+	if (add_cmd_node(shell, &cmd, tokens) == 1)
 		return (free_tokens(tokens), 0);
 	if (nb_cmds(cmd) > 1)
 		execute_pipeline(cmd, shell, tokens);
@@ -82,6 +80,8 @@ void	main_loop(char **envp)
 	char	*read_line;
 
 	shell.env = NULL;
+	shell.saved_stdin = -1;
+	shell.saved_stdout = -1;
 	set_env(&shell.env, envp);
 	init_pwd(&shell.env);
 	shell.exit_status = 0;
@@ -91,11 +91,12 @@ void	main_loop(char **envp)
 		g_signal = 0;
 		read_line = readline("Barney$ ");
 		if (!read_line)
-			(free_env(&shell), exit(shell.exit_status));
+			(free_env(&shell), close(0), close(1), close(2),
+				exit(shell.exit_status));
 		if (g_signal == SIGINT)
 			shell.exit_status = 130;
 		if (read_line[0])
-			read_line = complete_quotes(read_line);
+			read_line = complete_quotes(read_line, &shell);
 		if (read_line && read_line[0])
 			process_line(read_line, &shell);
 		free(read_line);

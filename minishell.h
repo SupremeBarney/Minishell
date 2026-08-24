@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 11:31:14 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 17:22:18 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/24 17:28:50 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ typedef struct s_shell
 	int		exit_status;
 	char	*read_line;
 	int		rank;
+	int		saved_stdin;
+	int		saved_stdout;
 }	t_shell;
 
 typedef struct s_exec_info
@@ -106,7 +108,7 @@ extern volatile sig_atomic_t	g_signal;
 void			handle_sigint(int sig);
 void			setup_signals(void);
 char			*strjoin_free(char *s1, char *s2);
-char			*read_heredoc(char *delimiter, t_shell shell, int expand);
+char			*read_heredoc(char *delimiter, t_shell *shell, int expand);
 char			*read_pipe_all(int fd);
 void			heredoc_child(int *pipe_fd, char *delimiter, t_shell shell,
 					int expand);
@@ -116,18 +118,18 @@ int				nb_of_tokens(t_token *token);
 void			init_cmd(t_cmd *cmd);
 int				pipe_token(t_cmd **cur_cmd, t_token **cur_token, int *i);
 void			redir_in_token(t_token **cur_token, t_cmd *cur_cmd,
-					t_shell shell);
+					t_shell *shell);
 int				heredoc_token(t_cmd **cmd, t_token **cur_token,
-					t_cmd *cur_cmd, t_shell shell);
+					t_cmd *cur_cmd, t_shell *shell);
 void			redir_out_token(t_token **cur_token, t_cmd *cur_cmd,
-					t_shell shell);
+					t_shell *shell);
 void			redir_out_append(t_token **cur_token, t_cmd *cur_cmd,
-					t_shell shell);
+					t_shell *shell);
 int				handle_redir(t_cmd **cmd, t_token **cur_token,
-					t_cmd *cur_cmd, t_shell shell);
-int				while_add_cmd(t_shell shell, t_token *cur_token,
+					t_cmd *cur_cmd, t_shell *shell);
+int				while_add_cmd(t_shell *shell, t_token *cur_token,
 					t_cmd *cur_cmd, t_cmd **cmd);
-int				add_cmd_node(t_shell shell, t_cmd **cmd, t_token *tokens);
+int				add_cmd_node(t_shell *shell, t_cmd **cmd, t_token *tokens);
 int				nb_of_quotes(char *token);
 char			*no_quotes(char *token);
 t_token_type	which_type(char *token);
@@ -218,6 +220,7 @@ int				quote_state(char *str);
 int				ampersand_parser(char *read_line);
 int				pipe_with_space(char *read_line);
 int				slash_parser(char *read_line);
+char			*check_quote_status(int status, char *res, t_shell *shell);
 void			quotes_error(char *tmp, int state);
 void			heredoc_write(char *expanse, char *tmp, int *pipe_fd);
 char			*heredoc_expansion(char *str, t_shell shell);
@@ -237,5 +240,6 @@ void			ft_exec_child_error(char *str);
 int				ft_is_exitable_char_check(char *str);
 char			*before_equal(char *a);
 void			pid_check(pid_t pid, t_shell *shell);
+void			clean_and_exit_child(t_shell *shell, int status);
 
 #endif

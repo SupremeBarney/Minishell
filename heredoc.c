@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:41:29 by alexfran          #+#    #+#             */
-/*   Updated: 2026/08/22 16:32:07 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/24 18:55:35 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	heredoc_child(int *pipe_fd, char *delimiter, t_shell shell, int expand)
 	exit(0);
 }
 
-char	*read_heredoc(char *delimiter, t_shell shell, int expand)
+char	*read_heredoc(char *delimiter, t_shell *shell, int expand)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
@@ -85,7 +85,7 @@ char	*read_heredoc(char *delimiter, t_shell shell, int expand)
 		return (NULL);
 	pid = fork();
 	if (pid == 0)
-		heredoc_child(pipe_fd, delimiter, shell, expand);
+		heredoc_child(pipe_fd, delimiter, *shell, expand);
 	signal(SIGINT, SIG_IGN);
 	close(pipe_fd[1]);
 	res = read_pipe_all(pipe_fd[0]);
@@ -93,7 +93,10 @@ char	*read_heredoc(char *delimiter, t_shell shell, int expand)
 	waitpid(pid, &status, 0);
 	setup_signals();
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		return (free(res), write(1, "\n", 1), NULL);
+	{
+		shell->exit_status = 130;
+		return (free(res), write(0, "\n", 1), NULL);
+	}
 	return (res);
 }
 

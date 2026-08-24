@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 12:26:13 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 16:27:04 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/24 19:22:15 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,22 @@ void	ft_exit(int *exit_status, t_token *tokens, t_cmd *cmd, t_shell shell)
 	if (!bad && ft_check_num_args(cmd->args) > 2)
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);
-		*exit_status = 1;
+		*exit_status = 2;
+		return ;
+	}
+	if (bad)
+	{
+		*exit_status = code;
 		return ;
 	}
 	free_tokens(tokens);
 	free_cmd(cmd);
+	if (shell.saved_stdin != -1)
+		close(shell.saved_stdin);
+	if (shell.saved_stdout != -1)
+		close(shell.saved_stdout);
 	free_env(&shell);
 	clear_history();
+	(close(0), close(1), close(2));
 	exit(code);
 }

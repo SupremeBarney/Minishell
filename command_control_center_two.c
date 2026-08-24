@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_control_center_two.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nipichon <nipichon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexfran <alexfran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 15:02:12 by nipichon          #+#    #+#             */
-/*   Updated: 2026/08/22 17:21:43 by nipichon         ###   ########.fr       */
+/*   Updated: 2026/08/24 16:49:06 by alexfran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,26 @@
 void	command_control(t_cmd *com_to_exec,
 							t_shell *shell, t_token *tokens)
 {
-	int	saved_stdin;
-	int	saved_stdout;
-
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
+	shell->saved_stdin = dup(STDIN_FILENO);
+	shell->saved_stdout = dup(STDOUT_FILENO);
 	if (apply_redirections(com_to_exec) == -1)
 	{
 		shell->exit_status = 1;
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
+		dup2(shell->saved_stdin, STDIN_FILENO);
+		dup2(shell->saved_stdout, STDOUT_FILENO);
+		close(shell->saved_stdin);
+		close(shell->saved_stdout);
+		shell->saved_stdin = -1;
+		shell->saved_stdout = -1;
 		return ;
 	}
 	dispatch_command(com_to_exec, shell, tokens);
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
+	dup2(shell->saved_stdin, STDIN_FILENO);
+	dup2(shell->saved_stdout, STDOUT_FILENO);
+	close(shell->saved_stdin);
+	close(shell->saved_stdout);
+	shell->saved_stdin = -1;
+	shell->saved_stdout = -1;
 }
 
 static int	ft_path_has_exec(char *dir, char *str)
